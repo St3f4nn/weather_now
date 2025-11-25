@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  a {
+    @apply inline-block;
+  }
+}
+
+@layer components {
+  .container {
+    @apply mx-auto px-4 md:px-6;
+  }
+}
