@@ -608,8 +608,16 @@ a {
   }
 }
 
-.mt-4 {
-  margin-top: 1rem;
+.hidden {
+  display: none;
+}
+
+.h-4 {
+  height: 1rem;
+}
+
+.h-10 {
+  height: 2.5rem;
 }
 
 .bg-neutral-900 {
@@ -619,15 +627,6 @@ a {
 
 .font-dm-sans {
   font-family: 'DM Sans', sans-serif;
-}
-
-.font-bricolage-grotesque {
-  font-family: 'Bricolage Grotesque', sans-serif;
-}
-
-.text-4xl {
-  font-size: 2.25rem;
-  line-height: 2.5rem;
 }
 
 .text-white {

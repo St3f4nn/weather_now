@@ -27,5 +27,38 @@
     <script defer src="./js/script.js"></script>
     <title>Weather Forecast | Weather Now</title>
   </head>
-  <body class="debug-screens font-dm-sans bg-neutral-900 text-white"></body>
+  <body class="debug-screens font-dm-sans bg-neutral-900 text-white">
+    <!-- Header -->
+    <header>
+      <div class="container">
+        <!-- Logo -->
+        <img src="./assets/images/logo.svg" alt="Weather Now logo" />
+        <!-- Units navigation -->
+        <nav>
+          <button>Units</button>
+          <!-- Units dropdown -->
+          <div>
+            <button>Switch to <span>Imperial</span></button>
+            <ul>
+              <li>
+                <small>temperature</small>
+                <p>Celsius (°C)</p>
+                <p>Fahrenheit (°F)</p>
+              </li>
+              <li>
+                <small>wind speed</small>
+                <p>km/h</p>
+                <p>mph</p>
+              </li>
+              <li>
+                <small>precipitation</small>
+                <p>Millimeters (mm)</p>
+                <p>Inches (in)</p>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+    </header>
+  </body>
 </html>
