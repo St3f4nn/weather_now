@@ -6,6 +6,10 @@ module.exports = {
   content: ["./dist/**/*.html", "./dist/js/**/*.js"],
   theme: {
     extend: {
+      boxShadow: {
+        ui: `inset 0 0 0 0.0625rem #3c3b5e`,
+        search: `inset 0 0 0 0.0625rem #302f4a`,
+      },
       colors: {
         neutral: {
           200: "#d4d3d9",
@@ -26,6 +30,25 @@ module.exports = {
       fontFamily: {
         "dm-sans": "'DM Sans', sans-serif",
         "bricolage-grotesque": "'Bricolage Grotesque', sans-serif",
+      },
+      height: {
+        4.25: "1.0625rem",
+        4.5: "1.125rem",
+      },
+      lineHeight: {
+        tighter: 1.2,
+      },
+      spacing: {
+        6.25: "1.5625rem",
+        7.5: "1.875rem",
+        9.5: "2.375rem",
+        10.5: "2.625rem",
+      },
+      width: {
+        2.25: "0.5625rem",
+      },
+      outlineOffset: {
+        3: "3px",
       },
     },
   },

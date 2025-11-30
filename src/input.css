@@ -12,4 +12,19 @@
   .container {
     @apply mx-auto px-4 md:px-6;
   }
+
+  nav.active #units-dropdown-container {
+    @apply !block;
+  }
+}
+
+@layer utilities {
+  /* Units dropdown */
+  .unit {
+    @apply relative font-medium text-base leading-tighter py-2.5 pl-2 pr-8 rounded-lg;
+  }
+
+  .active-unit {
+    @apply bg-neutral-700 after:content-[''] after:bg-[url('../assets/images/icon-checkmark.svg')] after:block after:h-4.25 after:w-3.5 after:bg-no-repeat after:bg-center after:bg-contain after:absolute after:top-1/2 after:-translate-y-1/2 after:right-2;
+  }
 }
