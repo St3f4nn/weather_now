@@ -640,10 +640,6 @@ nav.active #units-dropdown-container {
   margin-top: 0.625rem;
 }
 
-.\!block {
-  display: block !important;
-}
-
 .block {
   display: block;
 }
@@ -670,6 +666,16 @@ nav.active #units-dropdown-container {
 
 .min-w-0 {
   min-width: 0px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
 }
 
 .flex-col {
@@ -851,11 +857,6 @@ nav.active #units-dropdown-container {
 
 .outline-transparent {
   outline-color: transparent;
-}
-
-.blur {
-  --tw-blur: blur(8px);
-  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 
 .transition-all {
