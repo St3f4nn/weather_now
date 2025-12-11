@@ -38,25 +38,23 @@
           alt="Weather Now logo"
           class="h-7 md:h-10 min-w-0" />
         <!-- Units navigation -->
-        <nav>
+        <nav id="units-nav">
           <button
-            class="bg-neutral-800 font-medium text-sm leading-tighter md:text-base md:leading-tighter py-2 pr-6.25 pl-7.5 md:py-3 md:pr-9.5 md:pl-10.5 rounded-md md:rounded-lg relative before:contet-[''] before:bg-[url('../assets/images/icon-units.svg')] before:inline-block before:h-3.5 before:w-3.5 md:before:h-4 md:before:w-4 before:bg-no-repeat before:bg-center before:bg-cover before:absolute before:top-1/2 before:-translate-y-1/2 before:left-2.5 md:before:left-4 after:content-[''] after:bg-[url('../assets/images/icon-dropdown.svg')] after:inline-block after:h-3.5 after:w-2.25 md:after:h-4.5 md:after:w-3 after:bg-no-repeat after:bg-center after:bg-contain after:absolute after:top-1/2 after:-translate-y-1/2 after:right-2.5 md:after:right-4 outline outline-2 outline-transparent focus:outline-white focus:outline-offset-3 transition-outline-offset duration-150"
+            class="bg-neutral-800 font-medium text-sm leading-tighter md:text-base md:leading-tighter py-2 pr-6.25 pl-7.5 md:py-3 md:pr-9.5 md:pl-10.5 rounded-md md:rounded-lg relative before:contet-[''] before:bg-[url('../assets/images/icon-units.svg')] before:inline-block before:h-3.5 before:w-3.5 md:before:h-4 md:before:w-4 before:bg-no-repeat before:bg-center before:bg-cover before:absolute before:top-1/2 before:-translate-y-1/2 before:left-2.5 md:before:left-4 after:content-[''] after:bg-[url('../assets/images/icon-dropdown.svg')] after:inline-block after:h-3.5 after:w-2.25 md:after:h-4.5 md:after:w-3 after:bg-no-repeat after:bg-center after:bg-contain after:absolute after:top-1/2 after:-translate-y-1/2 after:right-2.5 md:after:right-4 outline outline-2 outline-transparent focus:outline-white focus:outline-offset-3 transition-all duration-150"
             id="units-btn">
             Units
           </button>
           <!-- Units dropdown -->
           <div
-            class="bg-neutral-800 px-2 pt-1.5 pb-0.5 rounded-xl shadow-ui absolute top-full right-4 md:right-6 mt-2.5 hidden w-[min(13.375rem,calc(100%-2rem))]"
-            id="units-dropdown-container">
+            class="bg-neutral-800 px-2 pt-1.5 pb-0.5 rounded-xl shadow-ui absolute top-full z-50 right-4 md:right-6 mt-2.5 hidden w-[min(13.375rem,calc(100%-2rem))]"
+            id="units-dropdown">
             <button
               class="block w-full text-left font-medium text-base leading-tighter py-2.5 px-2 bg-transparent hover:bg-neutral-700 rounded-lg outline outline-1 outline-transparent focus:outline-white focus:outline-offset-1 transition-all duration-150 shadow-[0_0_0_0.0625rem_transparent] focus:shadow-neutral-900"
               id="switch-units">
               Switch to <span>imperial</span>
             </button>
-            <ul
-              class="units-dropdown flex flex-col divide-y divide-neutral-600">
+            <ul class="flex flex-col divide-y divide-neutral-600" id="units">
               <li class="flex flex-col gap-1 py-1">
-                <!-- pt-1.5 px-2 -->
                 <small
                   class="block capitalize font-medium text-sm leading-tighter text-neutral-300 pt-1.5 px-2"
                   >temperature</small
@@ -65,7 +63,6 @@
                 <p class="unit">Fahrenheit (°F)</p>
               </li>
               <li class="flex flex-col gap-1 py-1">
-                <!-- pt-1.5 px-2 -->
                 <small
                   class="block capitalize font-medium text-sm leading-tighter text-neutral-300 pt-1.5 px-2"
                   >wind speed</small
@@ -74,7 +71,6 @@
                 <p class="unit">mph</p>
               </li>
               <li class="flex flex-col gap-1 py-1">
-                <!-- pt-1.5 px-2 -->
                 <small
                   class="block capitalize font-medium text-sm leading-tighter text-neutral-300 pt-1.5 px-2"
                   >precipitation</small
@@ -88,39 +84,62 @@
       </div>
     </header>
     <!-- Main content -->
-    <main>
-      <section id="input-place-component">
+    <main class="py-12 md:pb-20 lg:pt-16">
+      <!-- Main content header -->
+      <header>
         <div class="container">
-          <h1>How's the sky looking today?</h1>
-          <section id="input-place-container">
-            <!-- Input field -->
-            <div>
-              <label for="place">
-                <img src="./assets/images/icon-search.svg" alt="Search icon" />
+          <h1
+            class="font-bricolage-grotesque font-bold text-5.25xl leading-tighter text-center max-w-120.5 mx-auto lg:max-w-max">
+            How's the sky looking today?
+          </h1>
+          <!-- Search container -->
+          <section
+            id="search-container"
+            class="lg:max-w-164 flex flex-col md:flex-row gap-3 md:gap-4 mx-auto mt-12 lg:mt-16">
+            <!-- Search input container -->
+            <div
+              class="relative flex items-center gap-4 bg-neutral-800 pl-6 rounded-xl outline outline-2 outline-transparent focus-within:outline-white focus-within:outline-offset-3 transition-all duration-150 flex-grow flex-shrink-0"
+              id="search-input-container">
+              <!-- Search label -->
+              <label for="place" class="flex-shrink-0 cursor-pointer">
+                <img
+                  src="./assets/images/icon-search.svg"
+                  alt="Search icon"
+                  class="h-5" />
               </label>
+              <!-- Search field -->
               <input
                 type="text"
                 id="place"
                 name="place"
-                placeholder="Search for a place..." />
-              <div>
-                <button>city name</button>
-                <button>city name</button>
-                <button>city name</button>
-                <button>city name</button>
-              </div>
-              <div>
+                placeholder="Search for a place..."
+                class="font-dm-sans font-medium text-xl leading-tighter placeholder:text-neutral-200 bg-transparent focus:outline-none flex-grow w-full py-4 pr-6" />
+              <!-- Search dropdown -->
+              <div
+                class="absolute top-full left-0 w-full bg-neutral-800 shadow-search hidden flex-col gap-1 mt-2.5 z-40 p-2 rounded-xl max-h-46"
+                id="search-dropdown"></div>
+              <!-- Search loading box -->
+              <div
+                class="absolute top-full left-0 w-full bg-neutral-800 shadow-search mt-3.5 z-40 hidden items-center gap-2.5 py-4.5 px-4 rounded-xl"
+                id="search-loading-box">
                 <img
                   src="./assets/images/icon-loading.svg"
-                  alt="Loading icon" />
-                <p>Search in progress</p>
+                  alt="Loading icon"
+                  class="w-4 flex-shrink-0 animate-spin" />
+                <p class="font-medium text-base leading-tighter">
+                  Search in progress
+                </p>
               </div>
             </div>
             <!-- Search button -->
-            <button>Search</button>
+            <button
+              class="font-medium text-xl leading-tighter bg-blue-500 py-4 px-6 rounded-xl outline outline-2 outline-transparent focus:outline-blue-500 focus:outline-offset-3 transition-all duration-150"
+              id="search-btn">
+              Search
+            </button>
           </section>
         </div>
-      </section>
+      </header>
     </main>
   </body>
 </html>

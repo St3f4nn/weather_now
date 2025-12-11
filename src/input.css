@@ -13,7 +13,7 @@
     @apply mx-auto px-4 md:px-6;
   }
 
-  nav.active #units-dropdown-container {
+  nav.active #units-dropdown {
     @apply !block;
   }
 }
@@ -27,4 +27,20 @@
   .active-unit {
     @apply bg-neutral-700 after:content-[''] after:bg-[url('../assets/images/icon-checkmark.svg')] after:block after:h-4.25 after:w-3.5 after:bg-no-repeat after:bg-center after:bg-contain after:absolute after:top-1/2 after:-translate-y-1/2 after:right-2;
   }
+}
+
+/* Search dropdown scrollbar styles */
+#search-dropdown::-webkit-scrollbar {
+  width: 0.375rem;
+}
+
+#search-dropdown::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 0.5rem 0;
+  border-radius: 624.9375rem;
+}
+
+#search-dropdown::-webkit-scrollbar-thumb {
+  background-color: #555;
+  border-radius: 624.9375rem;
 }
