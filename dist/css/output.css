@@ -748,6 +748,10 @@ nav.active #units-dropdown {
   cursor: pointer;
 }
 
+.grid-cols-\[67\.57fr_32\.43fr\] {
+  grid-template-columns: 67.57fr 32.43fr;
+}
+
 .flex-col {
   flex-direction: column;
 }
@@ -1072,18 +1076,19 @@ nav.active #units-dropdown {
 /* Search dropdown scrollbar styles */
 
 #search-dropdown::-webkit-scrollbar {
-  width: 0.375rem;
+  width: 0.25rem;
 }
 
 #search-dropdown::-webkit-scrollbar-track {
   background: transparent;
   margin: 0.5rem 0;
-  border-radius: 624.9375rem;
+  border-radius: 0.75rem;
 }
 
 #search-dropdown::-webkit-scrollbar-thumb {
-  background-color: #555;
-  border-radius: 624.9375rem;
+  background-color: #302f4a;
+  border-radius: 0.75rem;
+  border: 1px solid #3c3b5e;
 }
 
 .placeholder\:text-neutral-200::-moz-placeholder {

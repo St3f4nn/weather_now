@@ -140,6 +140,184 @@
           </section>
         </div>
       </header>
+      <!-- Main content showcase -->
+      <section>
+        <!-- grid-cols-[67.57fr_32.43fr] -->
+        <div class="container">
+          <!-- Main content showcase left -->
+          <div>
+            <!-- Current weather -->
+            <div>
+              <!-- Temperature -->
+              <div>
+                <div>
+                  <h2 id="location">berlin, germany</h2>
+                  <h4 id="date">Tuesday, Aug 5, 2025</h4>
+                </div>
+                <div>
+                  <img src="./assets/images/icon-sunny.webp" alt="Sun icon" />
+                  <h2 id="current-temperature">20°</h2>
+                </div>
+              </div>
+              <!-- Stats -->
+              <ul>
+                <li>
+                  <h4>feels like</h4>
+                  <span id="apparent-temperature">18°</span>
+                </li>
+                <li>
+                  <h4>humidity</h4>
+                  <span id="relative-humidity">46%</span>
+                </li>
+                <li>
+                  <h4>wind</h4>
+                  <span id="wind-speed">14 km/h</span>
+                </li>
+                <li>
+                  <h4>precipitation</h4>
+                  <span id="precipitation">0 mm</span>
+                </li>
+              </ul>
+            </div>
+            <!-- Daily forecast -->
+            <div>
+              <h3>Daily forecast</h3>
+              <ul>
+                <li>
+                  <span>tue</span>
+                  <img src="./assets/images/icon-rain.webp" alt="Rain icon" />
+                  <div>
+                    <span id="max-temperature">20°</span>
+                    <span id="min-temperature">14°</span>
+                  </div>
+                </li>
+                <li>
+                  <span>wed</span>
+                  <img
+                    src="./assets/images/icon-drizzle.webp"
+                    alt="Drizzle icon" />
+                  <div>
+                    <span id="max-temperature">21°</span>
+                    <span id="min-temperature">15°</span>
+                  </div>
+                </li>
+                <li>
+                  <span>thu</span>
+                  <img src="./assets/images/icon-sunny.webp" alt="Sun icon" />
+                  <div>
+                    <span id="max-temperature">24°</span>
+                    <span id="min-temperature">14°</span>
+                  </div>
+                </li>
+                <li>
+                  <span>fri</span>
+                  <img
+                    src="./assets/images/icon-partly-cloudy.webp"
+                    alt="Partly cloudy icon" />
+                  <div>
+                    <span id="max-temperature">25°</span>
+                    <span id="min-temperature">13°</span>
+                  </div>
+                </li>
+                <li>
+                  <span>sat</span>
+                  <img src="./assets/images/icon-storm.webp" alt="Storm icon" />
+                  <div>
+                    <span id="max-temperature">21°</span>
+                    <span id="min-temperature">15°</span>
+                  </div>
+                </li>
+                <li>
+                  <span>sun</span>
+                  <img src="./assets/images/icon-snow.webp" alt="Snow icon" />
+                  <div>
+                    <span id="max-temperature">25°</span>
+                    <span id="min-temperature">16°</span>
+                  </div>
+                </li>
+                <li>
+                  <span>mon</span>
+                  <img src="./assets/images/icon-fog.webp" alt="Fog icon" />
+                  <div>
+                    <span id="max-temperature">24°</span>
+                    <span id="min-temperature">15°</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <!-- Main content showcase right (hourly forecast) -->
+          <div>
+            <div>
+              <h3>Hourly forecast</h3>
+              <!-- Days navigation -->
+              <div>
+                <button>Tuesday</button>
+                <!-- Days dropdown -->
+                <div>
+                  <button>Monday</button>
+                  <button>Tuesday</button>
+                  <button>Wednesday</button>
+                  <button>Thursday</button>
+                  <button>Friday</button>
+                  <button>Saturday</button>
+                  <button>Sunday</button>
+                </div>
+              </div>
+            </div>
+            <ul>
+              <li>
+                <img
+                  src="./assets/images/icon-overcast.webp"
+                  alt="Overcast icon" />
+                <span id="hour">3 pm</span>
+                <span id="hourly-temperature">20°</span>
+              </li>
+              <li>
+                <img
+                  src="./assets/images/icon-partly-cloudy.webp"
+                  alt="Partly cloudy icon" />
+                <span id="hour">4 pm</span>
+                <span id="hourly-temperature">20°</span>
+              </li>
+              <li>
+                <img src="./assets/images/icon-sunny.webp" alt="Sun icon" />
+                <span id="hour">5 pm</span>
+                <span id="hourly-temperature">20°</span>
+              </li>
+              <li>
+                <img
+                  src="./assets/images/icon-overcast.webp"
+                  alt="Overcast icon" />
+                <span id="hour">6 pm</span>
+                <span id="hourly-temperature">19°</span>
+              </li>
+              <li>
+                <img src="./assets/images/icon-snow.webp" alt="Snow icon" />
+                <span id="hour">7 pm</span>
+                <span id="hourly-temperature">18°</span>
+              </li>
+              <li>
+                <img src="./assets/images/icon-fog.webp" alt="Fog icon" />
+                <span id="hour">8 pm</span>
+                <span id="hourly-temperature">18°</span>
+              </li>
+              <li>
+                <img src="./assets/images/icon-snow.webp" alt="Snow icon" />
+                <span id="hour">9 pm</span>
+                <span id="hourly-temperature">17°</span>
+              </li>
+              <li>
+                <img
+                  src="./assets/images/icon-overcast.webp"
+                  alt="Overcast icon" />
+                <span id="hour">10 pm</span>
+                <span id="hourly-temperature">17°</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
     </main>
   </body>
 </html>
