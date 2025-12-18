@@ -16,6 +16,10 @@
   nav.active #units-dropdown {
     @apply !block;
   }
+
+  #days-nav.active #days-dropdown {
+    @apply !flex;
+  }
 }
 
 @layer utilities {
@@ -30,18 +34,47 @@
 }
 
 /* Search dropdown scrollbar styles */
-#search-dropdown::-webkit-scrollbar {
+#search-dropdown::-webkit-scrollbar,
+#hourly-data::-webkit-scrollbar {
   width: 0.25rem;
 }
 
-#search-dropdown::-webkit-scrollbar-track {
+#search-dropdown::-webkit-scrollbar-track,
+#hourly-data::-webkit-scrollbar-track {
   background: transparent;
-  margin: 0.5rem 0;
   border-radius: 0.75rem;
 }
 
-#search-dropdown::-webkit-scrollbar-thumb {
+#search-dropdown::-webkit-scrollbar-track {
+  margin: 0.5rem 0;
+}
+
+#search-dropdown::-webkit-scrollbar-thumb,
+#hourly-data::-webkit-scrollbar-thumb {
   background-color: #302f4a;
   border-radius: 0.75rem;
   border: 1px solid #3c3b5e;
+}
+
+/* Loading dots styles */
+.loading-dot {
+  animation: wave 1s infinite ease-in-out;
+}
+
+.loading-dot:nth-child(2) {
+  animation-delay: 0.3s;
+}
+.loading-dot:nth-child(3) {
+  animation-delay: 0.7s;
+}
+
+@keyframes wave {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-0.25rem);
+  }
 }

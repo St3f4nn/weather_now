@@ -11,6 +11,9 @@ const searchDropdown = document.querySelector("#search-dropdown");
 const searchLoadingBox = document.querySelector("#search-loading-box");
 const searchBtn = document.querySelector("#search-btn");
 
+const daysNav = document.querySelector("#days-nav");
+const daysBtn = document.querySelector("#days-btn");
+
 // HELPERS
 let places = new Set(JSON.parse(localStorage.getItem("places")) || []);
 
@@ -120,6 +123,9 @@ searchBtn.addEventListener("click", function () {
   toggleVisibility(searchLoadingBox, true);
 });
 
+// Show days
+daysBtn.addEventListener("click", () => daysNav.classList.toggle("active"));
+
 window.addEventListener("click", function (e) {
   // Hide units
   if (
@@ -133,7 +139,14 @@ window.addEventListener("click", function (e) {
   if (
     !["LABEL", "INPUT"].includes(e.target.tagName) &&
     !e.target.closest("#search-dropdown")
-  ) {
+  )
     toggleVisibility(searchDropdown, false);
-  }
+
+  // Hide days
+  if (
+    !e.target.closest("#days-btn") &&
+    !e.target.closest("#days-dropdown") &&
+    daysNav.classList.contains("active")
+  )
+    daysNav.classList.remove("active");
 });

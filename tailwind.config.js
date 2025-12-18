@@ -32,16 +32,26 @@ module.exports = {
         "bricolage-grotesque": "'Bricolage Grotesque', sans-serif",
       },
       fontSize: {
+        "2.8xl": "1.75rem",
+        "3.24xl": "2rem",
         "5.25xl": "3.25rem",
       },
       height: {
         4.25: "1.0625rem",
         4.5: "1.125rem",
+        30: "7.5rem",
+      },
+      minHeight: {
+        15: "3.75rem",
+        41.25: "10.3125rem",
       },
       maxHeight: {
+        15: "3.75rem",
         46: "11.5rem",
+        148: "37rem",
       },
       lineHeight: {
+        5.25: "1.3125rem",
         tighter: 1.2,
       },
       spacing: {
@@ -49,7 +59,9 @@ module.exports = {
         6.25: "1.5625rem",
         7.5: "1.875rem",
         9.5: "2.375rem",
+        10.25: "2.5625rem",
         10.5: "2.625rem",
+        20.75: "5.1875rem",
       },
       width: {
         2.25: "0.5625rem",
@@ -60,6 +72,9 @@ module.exports = {
       },
       outlineOffset: {
         3: "3px",
+      },
+      borderRadius: {
+        "2.5xl": "1.25rem",
       },
     },
   },
