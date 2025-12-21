@@ -40,9 +40,9 @@
         <!-- Units navigation -->
         <nav id="units-nav">
           <button
-            class="bg-neutral-800 font-medium text-sm leading-tighter md:text-base md:leading-tighter py-2 pr-6.25 pl-7.5 md:py-3 md:pr-9.5 md:pl-10.5 rounded-md md:rounded-lg relative before:contet-[''] before:bg-[url('../assets/images/icon-units.svg')] before:inline-block before:h-3.5 before:w-3.5 md:before:h-4 md:before:w-4 before:bg-no-repeat before:bg-center before:bg-cover before:absolute before:top-1/2 before:-translate-y-1/2 before:left-2.5 md:before:left-4 after:content-[''] after:bg-[url('../assets/images/icon-dropdown.svg')] after:inline-block after:h-3.5 after:w-2.25 md:after:h-4.5 md:after:w-3 after:bg-no-repeat after:bg-center after:bg-contain after:absolute after:top-1/2 after:-translate-y-1/2 after:right-2.5 md:after:right-4 outline outline-2 outline-transparent focus:outline-white focus:outline-offset-3 transition-all duration-150"
+            class="bg-neutral-800 font-medium text-sm leading-tighter md:text-base md:leading-tighter py-2 pr-6.25 pl-7.5 md:py-3 md:pr-9.5 md:pl-10.5 rounded-md md:rounded-lg relative before:contet-[''] before:bg-[url('../assets/images/icon-units.svg')] before:inline-block before:h-3.5 before:w-3.5 md:before:h-4 md:before:w-4 before:bg-no-repeat before:bg-center before:bg-cover before:absolute before:top-1/2 before:-translate-y-1/2 before:left-2.5 md:before:left-4 after:content-[''] after:bg-[url('../assets/images/icon-dropdown.svg')] after:inline-block after:h-3.5 after:w-2.25 md:after:h-4.5 md:after:w-3 after:bg-no-repeat after:bg-center after:bg-contain after:absolute after:top-1/2 after:-translate-y-1/2 after:right-2.5 md:after:right-4 outline outline-2 outline-transparent focus:outline-white focus:outline-offset-3 transition-all duration-150 capitalize"
             id="units-btn">
-            Units
+            units
           </button>
           <!-- Units dropdown -->
           <div
@@ -87,7 +87,7 @@
     <main class="py-12 md:pb-20 lg:pt-16">
       <!-- Main content header -->
       <header>
-        <div class="container">
+        <div class="container hidden">
           <h1
             class="font-bricolage-grotesque font-bold text-5.25xl leading-tighter text-center max-w-120.5 mx-auto lg:max-w-max">
             How's the sky looking today?
@@ -133,15 +133,29 @@
             </div>
             <!-- Search button -->
             <button
-              class="font-medium text-xl leading-tighter bg-blue-500 py-4 px-6 rounded-xl outline outline-2 outline-transparent focus:outline-blue-500 focus:outline-offset-3 transition-all duration-150"
+              class="font-medium text-xl leading-tighter bg-blue-500 py-4 px-6 rounded-xl outline outline-2 outline-transparent focus:outline-blue-500 focus:outline-offset-3 transition-all duration-150 capitalize"
               id="search-btn">
-              Search
+              search
             </button>
           </section>
         </div>
+        <!-- API error -->
+        <div class="container">
+          <img src="./assets/images/icon-error.svg" alt="Error icon" />
+          <h2
+            class="font-bricolage-grotesque font-bold text-5.25xl leading-tighter text-center max-w-120.5 mx-auto lg:max-w-max">
+            Something went wrong
+          </h2>
+          <p>
+            We couldn’t connect to the server (API error). Please try again in a
+            few moments.
+          </p>
+          <button>retry</button>
+        </div>
+        <p>No search result found!</p>
       </header>
       <!-- Main content showcase -->
-      <section>
+      <section class="hidden">
         <div
           class="container grid lg:grid-cols-[25fr_12fr] gap-8 mt-8 lg:mt-12">
           <!-- Main content showcase left -->
