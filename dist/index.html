@@ -87,7 +87,7 @@
     <main class="py-12 md:pb-20 lg:pt-16">
       <!-- Main content header -->
       <header>
-        <div class="container hidden">
+        <div class="container">
           <h1
             class="font-bricolage-grotesque font-bold text-5.25xl leading-tighter text-center max-w-120.5 mx-auto lg:max-w-max">
             How's the sky looking today?
@@ -140,19 +140,28 @@
           </section>
         </div>
         <!-- API error -->
-        <div class="container">
-          <img src="./assets/images/icon-error.svg" alt="Error icon" />
+        <div class="container hidden flex-col items-center gap-6 pt-10">
+          <img
+            src="./assets/images/icon-error.svg"
+            alt="Error icon"
+            class="h-12.5 w-10.5" />
           <h2
-            class="font-bricolage-grotesque font-bold text-5.25xl leading-tighter text-center max-w-120.5 mx-auto lg:max-w-max">
+            class="font-bricolage-grotesque font-bold text-5.25xl leading-tighter text-center">
             Something went wrong
           </h2>
-          <p>
+          <p
+            class="font-medium text-xl leading-tighter text-neutral-200 text-center max-w-138.5">
             We couldn’t connect to the server (API error). Please try again in a
             few moments.
           </p>
-          <button>retry</button>
+          <button
+            class="font-medium text-base leading-tighter capitalize bg-neutral-800 py-3 pl-10.5 pr-4 before:contet-[''] before:bg-[url('../assets/images/icon-retry.svg')] before:inline-block before:h-4 before:w-4 before:bg-no-repeat before:bg-center before:bg-cover before:absolute before:top-1/2 before:-translate-y-1/2 before:left-4 relative rounded-lg">
+            retry
+          </button>
+          <p class="font-bold text-2.8xl leading-tighter text-center">
+            No search result found!
+          </p>
         </div>
-        <p>No search result found!</p>
       </header>
       <!-- Main content showcase -->
       <section class="hidden">

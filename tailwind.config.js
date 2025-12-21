@@ -39,6 +39,7 @@ module.exports = {
       height: {
         4.25: "1.0625rem",
         4.5: "1.125rem",
+        12.5: "3.125rem",
         30: "7.5rem",
       },
       minHeight: {
@@ -68,6 +69,7 @@ module.exports = {
       },
       maxWidth: {
         120.5: "30.125rem",
+        138.5: "34.625rem",
         164: "41rem",
       },
       outlineOffset: {
