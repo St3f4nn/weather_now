@@ -164,7 +164,7 @@
         </div>
       </header>
       <!-- Main content showcase -->
-      <section class="hidden">
+      <section class="hidden" id="main-content-showcase">
         <div
           class="container grid lg:grid-cols-[25fr_12fr] gap-8 mt-8 lg:mt-12">
           <!-- Main content showcase left -->
@@ -176,7 +176,8 @@
                 class="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4 md:gap-0 items-center px-6 py-10.25 md:py-20.75 rounded-2.5xl bg-no-repeat bg-center bg-cover bg-[url('../assets/images/bg-today-small.svg')] sm:bg-[url('../assets/images/bg-today-large.svg')] relative overflow-hidden">
                 <!-- Temperature loading -->
                 <div
-                  class="bg-no-repeat bg-center bg-cover bg-[url('../assets/images/noise-effect.jpg')] absolute top-0 left-0 w-full h-full z-30 flex flex-col gap-3.5 items-center justify-center px-6 py-10.25 md:py-20.75">
+                  class="bg-no-repeat bg-center bg-cover bg-neutral-800 absolute top-0 left-0 w-full h-full z-20 flex flex-col gap-3.5 items-center justify-center px-6 py-10.25 md:py-20.75"
+                  id="temperature-loading-box">
                   <!-- Temperature loading dots -->
                   <div class="flex items-center gap-2.5">
                     <div
@@ -194,26 +195,17 @@
                 <div class="text-center md:text-left">
                   <h2
                     id="location"
-                    class="font-bold text-2.8xl leading-tighter capitalize">
-                    berlin, germany
-                  </h2>
+                    class="font-bold text-2.8xl leading-tighter capitalize"></h2>
                   <h4
                     id="date"
-                    class="font-medium text-lg leading-tighter capitalize opacity-80 mt-3">
-                    tuesday, aug 5, 2025
-                  </h4>
+                    class="font-medium text-lg leading-tighter capitalize opacity-80 mt-3"></h4>
                 </div>
                 <div
                   class="flex items-center justify-center md:justify-start gap-5">
-                  <img
-                    src="./assets/images/icon-sunny.webp"
-                    alt="Sun icon"
-                    class="h-30" />
+                  <img class="h-30" id="current-weather-icon" />
                   <span
                     id="current-temperature"
-                    class="font-semibold italic text-8xl block"
-                    >20°</span
-                  >
+                    class="font-semibold italic text-8xl block"></span>
                 </div>
               </div>
               <!-- Stats -->
@@ -274,127 +266,9 @@
               <h3 class="font-semibold text-xl leading-tighter">
                 Daily forecast
               </h3>
-              <ul class="grid grid-cols-3 md:grid-cols-7 gap-4 mt-5">
-                <li
-                  class="bg-neutral-800 shadow-ui rounded-xl flex flex-col items-center gap-4 py-4 px-2.5 min-h-41.25">
-                  <span class="font-medium text-lg leading-tighter capitalize"
-                    >tue</span
-                  >
-                  <img
-                    src="./assets/images/icon-rain.webp"
-                    alt="Rain icon"
-                    class="max-h-15" />
-                  <div
-                    class="font-medium text-base leading-tighter flex items-center justify-between gap-4 self-stretch">
-                    <span id="max-temperature">20°</span>
-                    <span id="min-temperature" class="text-neutral-200"
-                      >14°</span
-                    >
-                  </div>
-                </li>
-                <li
-                  class="bg-neutral-800 shadow-ui rounded-xl flex flex-col items-center gap-4 py-4 px-2.5 min-h-41.25">
-                  <span class="font-medium text-lg leading-tighter capitalize"
-                    >wed</span
-                  >
-                  <img
-                    src="./assets/images/icon-drizzle.webp"
-                    alt="Drizzle icon"
-                    class="max-h-15" />
-                  <div
-                    class="font-medium text-base leading-tighter flex items-center justify-between gap-4 self-stretch">
-                    <span id="max-temperature">21°</span>
-                    <span id="min-temperature" class="text-neutral-200"
-                      >15°</span
-                    >
-                  </div>
-                </li>
-                <li
-                  class="bg-neutral-800 shadow-ui rounded-xl flex flex-col items-center gap-4 py-4 px-2.5 min-h-41.25">
-                  <span class="font-medium text-lg leading-tighter capitalize"
-                    >thu</span
-                  >
-                  <img
-                    src="./assets/images/icon-sunny.webp"
-                    alt="Sun icon"
-                    class="max-h-15" />
-                  <div
-                    class="font-medium text-base leading-tighter flex items-center justify-between gap-4 self-stretch">
-                    <span id="max-temperature">24°</span>
-                    <span id="min-temperature" class="text-neutral-200"
-                      >14°</span
-                    >
-                  </div>
-                </li>
-                <li
-                  class="bg-neutral-800 shadow-ui rounded-xl flex flex-col items-center gap-4 py-4 px-2.5 min-h-41.25">
-                  <span class="font-medium text-lg leading-tighter capitalize"
-                    >fri</span
-                  >
-                  <img
-                    src="./assets/images/icon-partly-cloudy.webp"
-                    alt="Partly cloudy icon"
-                    class="max-h-15" />
-                  <div
-                    class="font-medium text-base leading-tighter flex items-center justify-between gap-4 self-stretch">
-                    <span id="max-temperature">25°</span>
-                    <span id="min-temperature" class="text-neutral-200"
-                      >13°</span
-                    >
-                  </div>
-                </li>
-                <li
-                  class="bg-neutral-800 shadow-ui rounded-xl flex flex-col items-center gap-4 py-4 px-2.5 min-h-41.25">
-                  <span class="font-medium text-lg leading-tighter capitalize"
-                    >sat</span
-                  >
-                  <img
-                    src="./assets/images/icon-storm.webp"
-                    alt="Storm icon"
-                    class="max-h-15" />
-                  <div
-                    class="font-medium text-base leading-tighter flex items-center justify-between gap-4 self-stretch">
-                    <span id="max-temperature">21°</span>
-                    <span id="min-temperature" class="text-neutral-200"
-                      >15°</span
-                    >
-                  </div>
-                </li>
-                <li
-                  class="bg-neutral-800 shadow-ui rounded-xl flex flex-col items-center gap-4 py-4 px-2.5 min-h-41.25">
-                  <span class="font-medium text-lg leading-tighter capitalize"
-                    >sun</span
-                  >
-                  <img
-                    src="./assets/images/icon-snow.webp"
-                    alt="Snow icon"
-                    class="max-h-15" />
-                  <div
-                    class="font-medium text-base leading-tighter flex items-center justify-between gap-4 self-stretch">
-                    <span id="max-temperature">25°</span>
-                    <span id="min-temperature" class="text-neutral-200"
-                      >16°</span
-                    >
-                  </div>
-                </li>
-                <li
-                  class="bg-neutral-800 shadow-ui rounded-xl flex flex-col items-center gap-4 py-4 px-2.5 min-h-41.25">
-                  <span class="font-medium text-lg leading-tighter capitalize"
-                    >mon</span
-                  >
-                  <img
-                    src="./assets/images/icon-fog.webp"
-                    alt="Fog icon"
-                    class="max-h-15" />
-                  <div
-                    class="font-medium text-base leading-tighter flex items-center justify-between gap-4 self-stretch">
-                    <span id="max-temperature">24°</span>
-                    <span id="min-temperature" class="text-neutral-200"
-                      >15°</span
-                    >
-                  </div>
-                </li>
-              </ul>
+              <ul
+                class="grid grid-cols-3 md:grid-cols-7 gap-4 mt-5"
+                id="daily-data"></ul>
             </div>
           </div>
           <!-- Main content showcase right (hourly forecast) -->
@@ -448,229 +322,7 @@
             </div>
             <ul
               class="flex flex-col gap-4 mt-4 max-h-148 overflow-y-scroll pl-4 md:pl-6 pr-3 md:pr-5"
-              id="hourly-data">
-              <li
-                class="flex items-center gap-2 bg-neutral-700 shadow-ui py-2.5 pl-3 pr-4 rounded-lg min-h-15">
-                <img
-                  src="./assets/images/icon-overcast.webp"
-                  alt="Overcast icon"
-                  class="h-10" />
-                <span
-                  id="hour"
-                  class="font-medium text-xl leading-tighter uppercase flex-grow"
-                  >3 pm</span
-                >
-                <span
-                  id="hourly-temperature"
-                  class="font-medium text-base leading-tighter"
-                  >20°</span
-                >
-              </li>
-              <li
-                class="flex items-center gap-2 bg-neutral-700 shadow-ui py-2.5 pl-3 pr-4 rounded-lg min-h-15">
-                <img
-                  src="./assets/images/icon-partly-cloudy.webp"
-                  alt="Partly cloudy icon"
-                  class="h-10" />
-                <span
-                  id="hour"
-                  class="font-medium text-xl leading-tighter uppercase flex-grow"
-                  >4 pm</span
-                >
-                <span
-                  id="hourly-temperature"
-                  class="font-medium text-base leading-tighter"
-                  >20°</span
-                >
-              </li>
-              <li
-                class="flex items-center gap-2 bg-neutral-700 shadow-ui py-2.5 pl-3 pr-4 rounded-lg min-h-15">
-                <img
-                  src="./assets/images/icon-sunny.webp"
-                  alt="Sun icon"
-                  class="h-10" />
-                <span
-                  id="hour"
-                  class="font-medium text-xl leading-tighter uppercase flex-grow"
-                  >5 pm</span
-                >
-                <span
-                  id="hourly-temperature"
-                  class="font-medium text-base leading-tighter"
-                  >20°</span
-                >
-              </li>
-              <li
-                class="flex items-center gap-2 bg-neutral-700 shadow-ui py-2.5 pl-3 pr-4 rounded-lg min-h-15">
-                <img
-                  src="./assets/images/icon-overcast.webp"
-                  alt="Overcast icon"
-                  class="h-10" />
-                <span
-                  id="hour"
-                  class="font-medium text-xl leading-tighter uppercase flex-grow"
-                  >6 pm</span
-                >
-                <span
-                  id="hourly-temperature"
-                  class="font-medium text-base leading-tighter"
-                  >19°</span
-                >
-              </li>
-              <li
-                class="flex items-center gap-2 bg-neutral-700 shadow-ui py-2.5 pl-3 pr-4 rounded-lg min-h-15">
-                <img
-                  src="./assets/images/icon-snow.webp"
-                  alt="Snow icon"
-                  class="h-10" />
-                <span
-                  id="hour"
-                  class="font-medium text-xl leading-tighter uppercase flex-grow"
-                  >7 pm</span
-                >
-                <span
-                  id="hourly-temperature"
-                  class="font-medium text-base leading-tighter"
-                  >18°</span
-                >
-              </li>
-              <li
-                class="flex items-center gap-2 bg-neutral-700 shadow-ui py-2.5 pl-3 pr-4 rounded-lg min-h-15">
-                <img
-                  src="./assets/images/icon-fog.webp"
-                  alt="Fog icon"
-                  class="h-10" />
-                <span
-                  id="hour"
-                  class="font-medium text-xl leading-tighter uppercase flex-grow"
-                  >8 pm</span
-                >
-                <span
-                  id="hourly-temperature"
-                  class="font-medium text-base leading-tighter"
-                  >18°</span
-                >
-              </li>
-              <li
-                class="flex items-center gap-2 bg-neutral-700 shadow-ui py-2.5 pl-3 pr-4 rounded-lg min-h-15">
-                <img
-                  src="./assets/images/icon-snow.webp"
-                  alt="Snow icon"
-                  class="h-10" />
-                <span
-                  id="hour"
-                  class="font-medium text-xl leading-tighter uppercase flex-grow"
-                  >9 pm</span
-                >
-                <span
-                  id="hourly-temperature"
-                  class="font-medium text-base leading-tighter"
-                  >17°</span
-                >
-              </li>
-              <li
-                class="flex items-center gap-2 bg-neutral-700 shadow-ui py-2.5 pl-3 pr-4 rounded-lg min-h-15">
-                <img
-                  src="./assets/images/icon-overcast.webp"
-                  alt="Overcast icon"
-                  class="h-10" />
-                <span
-                  id="hour"
-                  class="font-medium text-xl leading-tighter uppercase flex-grow"
-                  >10 pm</span
-                >
-                <span
-                  id="hourly-temperature"
-                  class="font-medium text-base leading-tighter"
-                  >17°</span
-                >
-              </li>
-              <li
-                class="flex items-center gap-2 bg-neutral-700 shadow-ui py-2.5 pl-3 pr-4 rounded-lg min-h-15">
-                <img
-                  src="./assets/images/icon-overcast.webp"
-                  alt="Overcast icon"
-                  class="h-10" />
-                <span
-                  id="hour"
-                  class="font-medium text-xl leading-tighter uppercase flex-grow"
-                  >10 pm</span
-                >
-                <span
-                  id="hourly-temperature"
-                  class="font-medium text-base leading-tighter"
-                  >17°</span
-                >
-              </li>
-              <li
-                class="flex items-center gap-2 bg-neutral-700 shadow-ui py-2.5 pl-3 pr-4 rounded-lg min-h-15">
-                <img
-                  src="./assets/images/icon-overcast.webp"
-                  alt="Overcast icon"
-                  class="h-10" />
-                <span
-                  id="hour"
-                  class="font-medium text-xl leading-tighter uppercase flex-grow"
-                  >10 pm</span
-                >
-                <span
-                  id="hourly-temperature"
-                  class="font-medium text-base leading-tighter"
-                  >17°</span
-                >
-              </li>
-              <li
-                class="flex items-center gap-2 bg-neutral-700 shadow-ui py-2.5 pl-3 pr-4 rounded-lg min-h-15">
-                <img
-                  src="./assets/images/icon-overcast.webp"
-                  alt="Overcast icon"
-                  class="h-10" />
-                <span
-                  id="hour"
-                  class="font-medium text-xl leading-tighter uppercase flex-grow"
-                  >10 pm</span
-                >
-                <span
-                  id="hourly-temperature"
-                  class="font-medium text-base leading-tighter"
-                  >17°</span
-                >
-              </li>
-              <li
-                class="flex items-center gap-2 bg-neutral-700 shadow-ui py-2.5 pl-3 pr-4 rounded-lg min-h-15">
-                <img
-                  src="./assets/images/icon-overcast.webp"
-                  alt="Overcast icon"
-                  class="h-10" />
-                <span
-                  id="hour"
-                  class="font-medium text-xl leading-tighter uppercase flex-grow"
-                  >10 pm</span
-                >
-                <span
-                  id="hourly-temperature"
-                  class="font-medium text-base leading-tighter"
-                  >17°</span
-                >
-              </li>
-              <li
-                class="flex items-center gap-2 bg-neutral-700 shadow-ui py-2.5 pl-3 pr-4 rounded-lg min-h-15">
-                <img
-                  src="./assets/images/icon-overcast.webp"
-                  alt="Overcast icon"
-                  class="h-10" />
-                <span
-                  id="hour"
-                  class="font-medium text-xl leading-tighter uppercase flex-grow"
-                  >10 pm</span
-                >
-                <span
-                  id="hourly-temperature"
-                  class="font-medium text-base leading-tighter"
-                  >17°</span
-                >
-              </li>
-            </ul>
+              id="hourly-data"></ul>
           </div>
         </div>
       </section>
