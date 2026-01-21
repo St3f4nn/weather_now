@@ -5,6 +5,13 @@ const unitsNav = document.querySelector("#units-nav");
 const unitsBtn = document.querySelector("#units-btn");
 const switchUnitsBtn = document.querySelector("#switch-units");
 
+const mainContentHeaderContainer = document.querySelector(
+  "#main-content-header-container",
+);
+const APIErrorContainer = document.querySelector("#api-error-container");
+const retryBtn = document.querySelector("#retry-btn");
+const notFoundEl = document.querySelector("#not-found-paragraph");
+
 const searchInputContainer = document.querySelector("#search-input-container");
 const searchInputField = document.querySelector("#place");
 const searchDropdown = document.querySelector("#search-dropdown");
@@ -12,8 +19,11 @@ const searchLoadingBox = document.querySelector("#search-loading-box");
 const searchBtn = document.querySelector("#search-btn");
 
 const mainContentShowcase = document.querySelector("#main-content-showcase");
+const mainContentShowcaseContainer = document.querySelector(
+  "#main-content-showcase-container",
+);
 const temperatureLoadingBox = document.querySelector(
-  "#temperature-loading-box"
+  "#temperature-loading-box",
 );
 const locationEl = document.querySelector("#location");
 const dateEl = document.querySelector("#date");
@@ -34,9 +44,10 @@ const hourlyData = document.querySelector("#hourly-data");
 
 // HELPERS
 let places = new Set(JSON.parse(localStorage.getItem("places")) || []);
+let notFound;
 let placeForecastResponse;
 let placeForecastData;
-let hourCount = 0;
+let hourCount;
 
 const dateToday = new Date();
 const dateTodayFormat = `${dateToday.toLocaleDateString("en-US", {
@@ -73,6 +84,8 @@ function toggleVisibility(el, state) {
   el.classList.toggle("flex", state);
   el.classList.toggle("hidden", !state);
 }
+
+const toggleHiddenClass = (el, state) => el.classList.toggle("hidden", state);
 
 // Get weather icon data (src or alt text) from weather code
 function getWeatherIconData(weatherCode) {
@@ -154,17 +167,53 @@ function getWeatherIconData(weatherCode) {
   }
 }
 
+// Get error message
+const getErrorMessage = err =>
+  err instanceof TypeError ? undefined : err.message;
+
+// Render error
+function renderError(
+  notFound,
+  msg = "We couldn't connect to the server (API error).",
+) {
+  if (notFound) {
+    toggleHiddenClass(mainContentShowcase, false);
+
+    toggleHiddenClass(notFoundEl, false);
+
+    notFoundEl.textContent = msg;
+
+    toggleHiddenClass(mainContentShowcaseContainer, true);
+
+    return;
+  }
+
+  toggleHiddenClass(mainContentHeaderContainer, true);
+  toggleHiddenClass(mainContentShowcase, true);
+
+  toggleVisibility(APIErrorContainer, true);
+
+  APIErrorContainer.querySelector("#api-error-message").textContent =
+    `${msg} Please try again in a few moments.`;
+}
+
 // Get place
 async function getPlace(place) {
   try {
+    notFound = false;
+
     const placeResponse = await fetch(
       `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(
-        place
-      )}&count=1&language=en&format=json`
+        place,
+      )}&count=1&language=en&format=json`,
     );
     const { results: placeData } = await placeResponse.json();
 
-    if (!placeData) throw new Error("No search result found!");
+    if (!placeData || !placeResponse.ok) {
+      notFound = true;
+
+      throw new Error("No search result found!");
+    }
 
     const { latitude: lat, longitude: lng, name, country } = placeData[0];
 
@@ -175,14 +224,20 @@ async function getPlace(place) {
         lng: lng.toFixed(2),
         name: name,
         country: country,
-      })
+      }),
     );
 
     placeForecastResponse = await fetch(
-      `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&daily=weather_code,temperature_2m_max,temperature_2m_min&hourly=weather_code,temperature_2m&current=weather_code,temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,precipitation&timezone=auto`
+      `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&daily=weather_code,temperature_2m_max,temperature_2m_min&hourly=weather_code,temperature_2m&current=weather_code,temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,precipitation&timezone=auto`,
     );
 
-    mainContentShowcase.classList.remove("hidden");
+    toggleHiddenClass(mainContentShowcase, false);
+    toggleHiddenClass(mainContentShowcaseContainer, false);
+
+    toggleHiddenClass(notFoundEl, true);
+
+    if (!placeForecastResponse.ok)
+      throw new Error("We’re unable to retrieve weather data at the moment.");
 
     placeForecastData = await placeForecastResponse.json();
 
@@ -192,59 +247,59 @@ async function getPlace(place) {
     dateEl.textContent = dateTodayFormat;
 
     currentWeatherIcon.src = getWeatherIconData(
-      placeForecastData.current.weather_code
+      placeForecastData.current.weather_code,
     ).src;
     currentWeatherIcon.alt = getWeatherIconData(
-      placeForecastData.current.weather_code
+      placeForecastData.current.weather_code,
     ).alt;
 
     currentTemperature.textContent = `${Math.round(
-      placeForecastData.current.temperature_2m
+      placeForecastData.current.temperature_2m,
     )}${placeForecastData.current_units.temperature_2m.slice(0, 1)}`;
 
     apparentTemperature.textContent = `${Math.round(
-      placeForecastData.current.apparent_temperature
+      placeForecastData.current.apparent_temperature,
     )}${placeForecastData.current_units.apparent_temperature.slice(0, 1)}`;
 
     relativeHumidity.textContent = `${placeForecastData.current.relative_humidity_2m}%`;
 
     windSpeed.textContent = `${Math.round(
-      placeForecastData.current.wind_speed_10m
+      placeForecastData.current.wind_speed_10m,
     )} ${placeForecastData.current_units.wind_speed_10m}`;
 
     precipitation.textContent = `${placeForecastData.current.precipitation.toFixed(
-      1
+      1,
     )} ${placeForecastData.current_units.precipitation}`;
 
     dailyData.querySelectorAll("li").forEach(function (el, i) {
       el.innerHTML = `
         <span class="font-medium text-lg leading-tighter capitalize">${new Date(
-          placeForecastData.daily.time[i]
+          placeForecastData.daily.time[i],
         ).toLocaleDateString("en-US", { weekday: "short" })}</span>
         <img src="${
           getWeatherIconData(placeForecastData.daily.weather_code[i]).src
         }" alt="${
-        getWeatherIconData(placeForecastData.daily.weather_code[i]).alt
-      }" class="max-h-15" />
+          getWeatherIconData(placeForecastData.daily.weather_code[i]).alt
+        }" class="max-h-15" />
         <div class="font-medium text-base leading-tighter flex items-center justify-between gap-4 self-stretch">
           <span id="max-temperature">${Math.round(
-            placeForecastData.daily.temperature_2m_max[i]
+            placeForecastData.daily.temperature_2m_max[i],
           )}${placeForecastData.daily_units.temperature_2m_max.slice(
-        0,
-        1
-      )}</span>
+            0,
+            1,
+          )}</span>
           <span id="min-temperature" class="text-neutral-200">${Math.round(
-            placeForecastData.daily.temperature_2m_min[i]
+            placeForecastData.daily.temperature_2m_min[i],
           )}${placeForecastData.daily_units.temperature_2m_min.slice(
-        0,
-        1
-      )}</span>
+            0,
+            1,
+          )}</span>
         </div>
       `;
     });
 
     daysBtn.textContent = new Date(
-      placeForecastData.hourly.time[0]
+      placeForecastData.hourly.time[0],
     ).toLocaleDateString("en-US", { weekday: "long" });
 
     hourCount = 0;
@@ -269,16 +324,16 @@ async function getPlace(place) {
         <img src="${
           getWeatherIconData(placeForecastData.hourly.weather_code[i]).src
         }" alt="${
-        getWeatherIconData(placeForecastData.hourly.weather_code[i]).alt
-      }" class="h-10" />
+          getWeatherIconData(placeForecastData.hourly.weather_code[i]).alt
+        }" class="h-10" />
         <span id="hour" class="font-medium text-xl leading-tighter uppercase flex-grow">${hour}</span>
         <span id="hourly-temperature" class="font-medium text-base leading-tighter">${Math.round(
-          placeForecastData.hourly.temperature_2m[i]
+          placeForecastData.hourly.temperature_2m[i],
         )}${placeForecastData.hourly_units.temperature_2m.slice(0, 1)}</span>
       `;
     });
   } catch (err) {
-    console.error(err.message);
+    renderError(notFound, getErrorMessage(err));
   }
 
   toggleVisibility(searchLoadingBox, false);
@@ -293,7 +348,7 @@ dailyData.innerHTML = Array.from({
 })
   .map(
     () =>
-      `<li class="bg-neutral-800 shadow-ui rounded-xl flex flex-col items-center gap-4 py-4 px-2.5 min-h-41.25"></li>`
+      `<li class="bg-neutral-800 shadow-ui rounded-xl flex flex-col items-center gap-4 py-4 px-2.5 min-h-41.25"></li>`,
   )
   .join("");
 
@@ -302,7 +357,7 @@ hourlyData.innerHTML = Array.from({
 })
   .map(
     () =>
-      `<li class="flex items-center gap-2 bg-neutral-700 shadow-ui py-2.5 pl-3 pr-4 rounded-lg min-h-15"></li>`
+      `<li class="flex items-center gap-2 bg-neutral-700 shadow-ui py-2.5 pl-3 pr-4 rounded-lg min-h-15"></li>`,
   )
   .join("");
 
@@ -316,7 +371,7 @@ switchUnitsBtn.addEventListener("click", () =>
   document
     .querySelector("#units")
     .querySelectorAll(".unit")
-    .forEach(unit => unit.classList.toggle("active-unit"))
+    .forEach(unit => unit.classList.toggle("active-unit")),
 );
 
 // Show search history
@@ -378,9 +433,22 @@ searchBtn.addEventListener("click", function () {
 
   localStorage.setItem("places", JSON.stringify([...places]));
 
+  searchInputField.value = "";
+
   renderSearchDropdown();
 
   toggleVisibility(searchLoadingBox, true);
+});
+
+retryBtn.addEventListener("click", function () {
+  toggleVisibility(APIErrorContainer, false);
+
+  toggleHiddenClass(mainContentHeaderContainer, false);
+
+  toggleHiddenClass(mainContentShowcase, true);
+  toggleHiddenClass(notFoundEl, true);
+
+  toggleHiddenClass(mainContentShowcaseContainer, false);
 });
 
 // Show days
@@ -399,7 +467,7 @@ daysDropdown.addEventListener("click", function (e) {
           .toLocaleDateString("en-US", {
             weekday: "long",
           })
-          .toLowerCase()
+          .toLowerCase(),
       )
       .indexOf(dayName);
 
@@ -425,11 +493,11 @@ daysDropdown.addEventListener("click", function (e) {
         <img src="${
           getWeatherIconData(placeForecastData.hourly.weather_code[index]).src
         }" alt="${
-        getWeatherIconData(placeForecastData.hourly.weather_code[index]).alt
-      }" class="h-10" />
+          getWeatherIconData(placeForecastData.hourly.weather_code[index]).alt
+        }" class="h-10" />
         <span id="hour" class="font-medium text-xl leading-tighter uppercase flex-grow">${hour}</span>
         <span id="hourly-temperature" class="font-medium text-base leading-tighter">${Math.round(
-          placeForecastData.hourly.temperature_2m[index]
+          placeForecastData.hourly.temperature_2m[index],
         )}${placeForecastData.hourly_units.temperature_2m.slice(0, 1)}</span>
       `;
     });
@@ -466,16 +534,24 @@ window.addEventListener("click", function (e) {
 window.addEventListener("load", function () {
   if (JSON.parse(this.localStorage.getItem("placeCoords"))) {
     const { lat, lng, name, country } = JSON.parse(
-      this.localStorage.getItem("placeCoords")
+      this.localStorage.getItem("placeCoords"),
     );
 
     (async function () {
       try {
         placeForecastResponse = await fetch(
-          `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&daily=weather_code,temperature_2m_max,temperature_2m_min&hourly=weather_code,temperature_2m&current=weather_code,temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,precipitation&timezone=auto`
+          `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&daily=weather_code,temperature_2m_max,temperature_2m_min&hourly=weather_code,temperature_2m&current=weather_code,temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,precipitation&timezone=auto`,
         );
 
-        mainContentShowcase.classList.remove("hidden");
+        toggleHiddenClass(mainContentShowcase, false);
+        toggleHiddenClass(mainContentShowcaseContainer, false);
+
+        toggleHiddenClass(notFoundEl, true);
+
+        if (!placeForecastResponse.ok)
+          throw new Error(
+            "We’re unable to retrieve weather data at the moment.",
+          );
 
         placeForecastData = await placeForecastResponse.json();
 
@@ -485,59 +561,59 @@ window.addEventListener("load", function () {
         dateEl.textContent = dateTodayFormat;
 
         currentWeatherIcon.src = getWeatherIconData(
-          placeForecastData.current.weather_code
+          placeForecastData.current.weather_code,
         ).src;
         currentWeatherIcon.alt = getWeatherIconData(
-          placeForecastData.current.weather_code
+          placeForecastData.current.weather_code,
         ).alt;
 
         currentTemperature.textContent = `${Math.round(
-          placeForecastData.current.temperature_2m
+          placeForecastData.current.temperature_2m,
         )}${placeForecastData.current_units.temperature_2m.slice(0, 1)}`;
 
         apparentTemperature.textContent = `${Math.round(
-          placeForecastData.current.apparent_temperature
+          placeForecastData.current.apparent_temperature,
         )}${placeForecastData.current_units.apparent_temperature.slice(0, 1)}`;
 
         relativeHumidity.textContent = `${placeForecastData.current.relative_humidity_2m}%`;
 
         windSpeed.textContent = `${Math.round(
-          placeForecastData.current.wind_speed_10m
+          placeForecastData.current.wind_speed_10m,
         )} ${placeForecastData.current_units.wind_speed_10m}`;
 
         precipitation.textContent = `${placeForecastData.current.precipitation.toFixed(
-          1
+          1,
         )} ${placeForecastData.current_units.precipitation}`;
 
         dailyData.querySelectorAll("li").forEach(function (el, i) {
           el.innerHTML = `
         <span class="font-medium text-lg leading-tighter capitalize">${new Date(
-          placeForecastData.daily.time[i]
+          placeForecastData.daily.time[i],
         ).toLocaleDateString("en-US", { weekday: "short" })}</span>
         <img src="${
           getWeatherIconData(placeForecastData.daily.weather_code[i]).src
         }" alt="${
-            getWeatherIconData(placeForecastData.daily.weather_code[i]).alt
-          }" class="max-h-15" />
+          getWeatherIconData(placeForecastData.daily.weather_code[i]).alt
+        }" class="max-h-15" />
         <div class="font-medium text-base leading-tighter flex items-center justify-between gap-4 self-stretch">
           <span id="max-temperature">${Math.round(
-            placeForecastData.daily.temperature_2m_max[i]
+            placeForecastData.daily.temperature_2m_max[i],
           )}${placeForecastData.daily_units.temperature_2m_max.slice(
             0,
-            1
+            1,
           )}</span>
           <span id="min-temperature" class="text-neutral-200">${Math.round(
-            placeForecastData.daily.temperature_2m_min[i]
+            placeForecastData.daily.temperature_2m_min[i],
           )}${placeForecastData.daily_units.temperature_2m_min.slice(
             0,
-            1
+            1,
           )}</span>
         </div>
       `;
         });
 
         daysBtn.textContent = new Date(
-          placeForecastData.hourly.time[0]
+          placeForecastData.hourly.time[0],
         ).toLocaleDateString("en-US", { weekday: "long" });
 
         hourCount = 0;
@@ -562,16 +638,16 @@ window.addEventListener("load", function () {
         <img src="${
           getWeatherIconData(placeForecastData.hourly.weather_code[i]).src
         }" alt="${
-            getWeatherIconData(placeForecastData.hourly.weather_code[i]).alt
-          }" class="h-10" />
+          getWeatherIconData(placeForecastData.hourly.weather_code[i]).alt
+        }" class="h-10" />
         <span id="hour" class="font-medium text-xl leading-tighter uppercase flex-grow">${hour}</span>
         <span id="hourly-temperature" class="font-medium text-base leading-tighter">${Math.round(
-          placeForecastData.hourly.temperature_2m[i]
+          placeForecastData.hourly.temperature_2m[i],
         )}${placeForecastData.hourly_units.temperature_2m.slice(0, 1)}</span>
       `;
         });
       } catch (err) {
-        console.error(err.message);
+        renderError(false, getErrorMessage(err));
       }
     })();
   }

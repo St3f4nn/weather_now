@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -87,7 +87,7 @@
     <main class="py-12 md:pb-20 lg:pt-16">
       <!-- Main content header -->
       <header>
-        <div class="container">
+        <div class="container" id="main-content-header-container">
           <h1
             class="font-bricolage-grotesque font-bold text-5.25xl leading-tighter text-center max-w-120.5 mx-auto lg:max-w-max">
             How's the sky looking today?
@@ -140,7 +140,9 @@
           </section>
         </div>
         <!-- API error -->
-        <div class="container hidden flex-col items-center gap-6 pt-10">
+        <div
+          class="container hidden flex-col items-center gap-6 pt-10"
+          id="api-error-container">
           <img
             src="./assets/images/icon-error.svg"
             alt="Error icon"
@@ -150,23 +152,27 @@
             Something went wrong
           </h2>
           <p
-            class="font-medium text-xl leading-tighter text-neutral-200 text-center max-w-138.5">
-            We couldn’t connect to the server (API error). Please try again in a
-            few moments.
-          </p>
+            class="font-medium text-xl leading-tighter text-neutral-200 text-center max-w-138.5"
+            id="api-error-message"></p>
           <button
-            class="font-medium text-base leading-tighter capitalize bg-neutral-800 py-3 pl-10.5 pr-4 before:contet-[''] before:bg-[url('../assets/images/icon-retry.svg')] before:inline-block before:h-4 before:w-4 before:bg-no-repeat before:bg-center before:bg-cover before:absolute before:top-1/2 before:-translate-y-1/2 before:left-4 relative rounded-lg">
+            class="font-medium text-base leading-tighter capitalize bg-neutral-800 rounded-lg flex items-center gap-2.5 py-3 px-4 outline outline-2 outline-transparent focus:outline-white focus:outline-offset-3 transition-all duration-150"
+            id="retry-btn">
+            <img
+              src="./assets/images/icon-retry.svg"
+              alt="Retry icon"
+              class="inline-block w-4" />
             retry
           </button>
-          <p class="font-bold text-2.8xl leading-tighter text-center">
-            No search result found!
-          </p>
         </div>
       </header>
       <!-- Main content showcase -->
-      <section class="hidden" id="main-content-showcase">
+      <section class="hidden mt-8 lg:mt-12" id="main-content-showcase">
+        <p
+          class="hidden font-bold text-2.8xl leading-tighter text-center"
+          id="not-found-paragraph"></p>
         <div
-          class="container grid lg:grid-cols-[25fr_12fr] gap-8 mt-8 lg:mt-12">
+          class="container grid lg:grid-cols-[25fr_12fr] gap-8"
+          id="main-content-showcase-container">
           <!-- Main content showcase left -->
           <div>
             <!-- Current weather -->
