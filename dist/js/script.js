@@ -218,7 +218,7 @@ async function getPlace(place) {
     const { latitude: lat, longitude: lng, name, country } = placeData[0];
 
     localStorage.setItem(
-      "placeCoords",
+      "selectedPlace",
       JSON.stringify({
         lat: lat.toFixed(2),
         lng: lng.toFixed(2),
@@ -387,18 +387,19 @@ searchInputContainer.addEventListener("click", function (e) {
 
 searchDropdown.addEventListener("click", function (e) {
   const removePlaceBtn = e.target.closest("svg");
+  const placeBtn = e.target.closest("button");
+
+  const placeName = placeBtn ? placeBtn.textContent.trim() : undefined;
 
   // Remove place from search history
   if (removePlaceBtn) {
     e.stopPropagation();
 
-    const placeName = removePlaceBtn.parentElement.textContent.trim();
-
     places.delete(placeName);
 
     localStorage.setItem("places", JSON.stringify([...places]));
 
-    removePlaceBtn.parentElement.remove();
+    placeBtn.remove();
 
     if (places.size <= 4) searchDropdown.classList.remove("overflow-y-scroll");
 
@@ -413,7 +414,9 @@ searchDropdown.addEventListener("click", function (e) {
   }
 
   // Hide search history and show loading box
-  if (e.target.closest("button")) {
+  if (placeBtn) {
+    getPlace(placeName);
+
     toggleVisibility(searchDropdown, false);
     toggleVisibility(searchLoadingBox, true);
   }
@@ -532,9 +535,9 @@ window.addEventListener("click", function (e) {
 });
 
 window.addEventListener("load", function () {
-  if (JSON.parse(this.localStorage.getItem("placeCoords"))) {
+  if (JSON.parse(this.localStorage.getItem("selectedPlace"))) {
     const { lat, lng, name, country } = JSON.parse(
-      this.localStorage.getItem("placeCoords"),
+      this.localStorage.getItem("selectedPlace"),
     );
 
     (async function () {
