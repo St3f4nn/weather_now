@@ -1,6 +1,9 @@
 "use strict";
 
 // ELEMENTS
+const pageTitleEl = document.querySelector("title");
+const pageTitleDefault = pageTitleEl.textContent;
+
 const unitsNav = document.querySelector("#units-nav");
 const unitsBtn = document.querySelector("#units-btn");
 const switchUnitsBtn = document.querySelector("#switch-units");
@@ -58,6 +61,13 @@ const dateTodayFormat = `${dateToday.toLocaleDateString("en-US", {
 })}`;
 
 // FUNCTIONS
+
+// Change page title
+function changePageTitle(word) {
+  const appName = pageTitleDefault.split(" | ").at(-1);
+
+  pageTitleEl.textContent = `${word} | ${appName}`;
+}
 
 // Render search history
 function renderSearchDropdown() {
@@ -243,6 +253,8 @@ async function getPlace(place) {
 
     toggleVisibility(temperatureLoadingBox, false);
 
+    changePageTitle(`${name}, ${country}`);
+
     locationEl.textContent = `${name}, ${country}`;
     dateEl.textContent = dateTodayFormat;
 
@@ -333,6 +345,8 @@ async function getPlace(place) {
       `;
     });
   } catch (err) {
+    changePageTitle(pageTitleDefault.split(" | ").at(0));
+
     renderError(notFound, getErrorMessage(err));
   }
 
@@ -560,6 +574,8 @@ window.addEventListener("load", function () {
 
         toggleVisibility(temperatureLoadingBox, false);
 
+        changePageTitle(`${name}, ${country}`);
+
         locationEl.textContent = `${name}, ${country}`;
         dateEl.textContent = dateTodayFormat;
 
@@ -650,6 +666,8 @@ window.addEventListener("load", function () {
       `;
         });
       } catch (err) {
+        changePageTitle(pageTitleDefault.split(" | ").at(0));
+
         renderError(false, getErrorMessage(err));
       }
     })();
