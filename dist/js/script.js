@@ -7,6 +7,8 @@ const pageTitleDefault = pageTitleEl.textContent;
 const unitsNav = document.querySelector("#units-nav");
 const unitsBtn = document.querySelector("#units-btn");
 const switchUnitsBtn = document.querySelector("#switch-units");
+const switchUnitKeyword = document.querySelector("#switch-unit-keyword");
+const units = document.querySelector("#units");
 
 const mainContentHeaderContainer = document.querySelector(
   "#main-content-header-container",
@@ -46,7 +48,10 @@ const daysDropdown = document.querySelector("#days-dropdown");
 const hourlyData = document.querySelector("#hourly-data");
 
 // HELPERS
+let isImperial = JSON.parse(localStorage.getItem("isImperial")) || false;
+
 let places = new Set(JSON.parse(localStorage.getItem("places")) || []);
+
 let notFound;
 let placeForecastResponse;
 let placeForecastData;
@@ -60,6 +65,17 @@ const dateTodayFormat = `${dateToday.toLocaleDateString("en-US", {
   year: "numeric",
 })}`;
 
+const UNITS_MAP = {
+  speed: {
+    "km/h": "km/h",
+    "mp/h": "mph",
+  },
+  precipitation: {
+    mm: "mm",
+    inch: "in",
+  },
+};
+
 // FUNCTIONS
 
 // Change page title
@@ -67,6 +83,27 @@ function changePageTitle(word) {
   const appName = pageTitleDefault.split(" | ").at(-1);
 
   pageTitleEl.textContent = `${word} | ${appName}`;
+}
+
+// Calculate Celsius to Fahrenheit and vice versa
+const convertTemperature = (value, toImperial) =>
+  Math.round(toImperial ? (value * 9) / 5 + 32 : ((value - 32) * 5) / 9);
+
+// Calculate km/h to mph and vice versa
+const convertSpeed = (value, toImperial) =>
+  Math.round(toImperial ? value * 0.621371 : value * 1.60934);
+
+// Calculate mm to in (inches) and vice versa
+const convertPrecipitation = (value, toImperial) =>
+  (toImperial ? value * 0.0393701 : value * 25.4).toFixed(1);
+
+// Extract numeric value and unit from a formatted string (e.g. "2 km/h", "2°")
+function parseValueAndUnit(str) {
+  const match = str.match(/(-?\d+(?:\.\d+)?)\s*([^\d\s]+)/);
+
+  if (!match) return null;
+
+  return Number(match[1]);
 }
 
 // Render search history
@@ -177,6 +214,13 @@ function getWeatherIconData(weatherCode) {
   }
 }
 
+// Convert hourly temperature if needed
+function convertTemperatureIfNeeded(value, apiUnit, targetUnit) {
+  if (apiUnit === targetUnit) return value;
+
+  return targetUnit === "F" ? (value * 9) / 5 + 32 : ((value - 32) * 5) / 9;
+}
+
 // Get error message
 const getErrorMessage = err =>
   err instanceof TypeError ? undefined : err.message;
@@ -238,7 +282,7 @@ async function getPlace(place) {
     );
 
     placeForecastResponse = await fetch(
-      `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&daily=weather_code,temperature_2m_max,temperature_2m_min&hourly=weather_code,temperature_2m&current=weather_code,temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,precipitation&timezone=auto`,
+      `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&daily=weather_code,temperature_2m_max,temperature_2m_min&hourly=weather_code,temperature_2m&current=weather_code,temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,precipitation&timezone=auto${isImperial ? "&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch" : ""}`,
     );
 
     toggleHiddenClass(mainContentShowcase, false);
@@ -277,11 +321,11 @@ async function getPlace(place) {
 
     windSpeed.textContent = `${Math.round(
       placeForecastData.current.wind_speed_10m,
-    )} ${placeForecastData.current_units.wind_speed_10m}`;
+    )} ${UNITS_MAP.speed[placeForecastData.current_units.wind_speed_10m]}`;
 
     precipitation.textContent = `${placeForecastData.current.precipitation.toFixed(
       1,
-    )} ${placeForecastData.current_units.precipitation}`;
+    )} ${UNITS_MAP.precipitation[placeForecastData.current_units.precipitation]}`;
 
     dailyData.querySelectorAll("li").forEach(function (el, i) {
       el.innerHTML = `
@@ -356,6 +400,19 @@ async function getPlace(place) {
 // Load search history from local storage
 if (places.size) renderSearchDropdown();
 
+if (isImperial) {
+  switchUnitKeyword.textContent = "metric";
+
+  units
+    .querySelectorAll(".unit")
+    .forEach(unit =>
+      unit.classList.toggle(
+        "active-unit",
+        unit.getAttribute("aria-label") === "imperial",
+      ),
+    );
+}
+
 // Render daily and hourly boxes
 dailyData.innerHTML = Array.from({
   length: 7,
@@ -381,12 +438,43 @@ hourlyData.innerHTML = Array.from({
 unitsBtn.addEventListener("click", () => unitsNav.classList.toggle("active"));
 
 // Switch units
-switchUnitsBtn.addEventListener("click", () =>
-  document
-    .querySelector("#units")
+switchUnitsBtn.addEventListener("click", function () {
+  isImperial = !isImperial;
+
+  localStorage.setItem("isImperial", isImperial);
+
+  switchUnitKeyword.textContent = isImperial ? "metric" : "imperial";
+
+  units
     .querySelectorAll(".unit")
-    .forEach(unit => unit.classList.toggle("active-unit")),
-);
+    .forEach(unit => unit.classList.toggle("active-unit"));
+
+  if (
+    !mainContentShowcase.classList.contains("hidden") &&
+    notFoundEl.classList.contains("hidden")
+  ) {
+    document
+      .querySelectorAll("span[id*='temperature'")
+      .forEach(
+        el =>
+          (el.textContent = `${convertTemperature(parseValueAndUnit(el.textContent), isImperial)}${placeForecastData.current_units.temperature_2m.slice(0, 1)}`),
+      );
+
+    document
+      .querySelectorAll("span[id*='speed']")
+      .forEach(
+        el =>
+          (el.textContent = `${convertSpeed(parseValueAndUnit(el.textContent), isImperial)} ${isImperial ? "mph" : "km/h"}`),
+      );
+
+    document
+      .querySelectorAll("span[id*='precipitation']")
+      .forEach(
+        el =>
+          (el.textContent = `${convertPrecipitation(parseValueAndUnit(el.textContent), isImperial)} ${isImperial ? "in" : "mm"}`),
+      );
+  }
+});
 
 // Show search history
 searchInputContainer.addEventListener("click", function (e) {
@@ -488,6 +576,11 @@ daysDropdown.addEventListener("click", function (e) {
       )
       .indexOf(dayName);
 
+    const apiUnit = placeForecastData.current_units.temperature_2m.includes("F")
+      ? "F"
+      : "C";
+    const targetUnit = isImperial ? "F" : "C";
+
     hourlyData.querySelectorAll("li").forEach(function (el, i) {
       const index = i + indexOfDay;
 
@@ -514,10 +607,16 @@ daysDropdown.addEventListener("click", function (e) {
         }" class="h-10" />
         <span id="hour" class="font-medium text-xl leading-tighter uppercase flex-grow">${hour}</span>
         <span id="hourly-temperature" class="font-medium text-base leading-tighter">${Math.round(
-          placeForecastData.hourly.temperature_2m[index],
+          convertTemperatureIfNeeded(
+            placeForecastData.hourly.temperature_2m[index],
+            apiUnit,
+            targetUnit,
+          ),
         )}${placeForecastData.hourly_units.temperature_2m.slice(0, 1)}</span>
       `;
     });
+
+    // (placeForecastData.hourly.temperature_2m[index] * 9) / 5 + 32
 
     daysBtn.textContent = dayName;
   }
@@ -557,7 +656,7 @@ window.addEventListener("load", function () {
     (async function () {
       try {
         placeForecastResponse = await fetch(
-          `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&daily=weather_code,temperature_2m_max,temperature_2m_min&hourly=weather_code,temperature_2m&current=weather_code,temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,precipitation&timezone=auto`,
+          `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&daily=weather_code,temperature_2m_max,temperature_2m_min&hourly=weather_code,temperature_2m&current=weather_code,temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,precipitation&timezone=auto${isImperial ? "&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch" : ""}`,
         );
 
         toggleHiddenClass(mainContentShowcase, false);
@@ -598,11 +697,11 @@ window.addEventListener("load", function () {
 
         windSpeed.textContent = `${Math.round(
           placeForecastData.current.wind_speed_10m,
-        )} ${placeForecastData.current_units.wind_speed_10m}`;
+        )} ${UNITS_MAP.speed[placeForecastData.current_units.wind_speed_10m]}`;
 
         precipitation.textContent = `${placeForecastData.current.precipitation.toFixed(
           1,
-        )} ${placeForecastData.current_units.precipitation}`;
+        )} ${UNITS_MAP.precipitation[placeForecastData.current_units.precipitation]}`;
 
         dailyData.querySelectorAll("li").forEach(function (el, i) {
           el.innerHTML = `
