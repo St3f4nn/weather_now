@@ -78,6 +78,22 @@ const UNITS_MAP = {
 
 // FUNCTIONS
 
+// Get user's current position
+const getPosition = () =>
+  new Promise((resolve, reject) =>
+    navigator.geolocation.getCurrentPosition(
+      resolve,
+      function (err) {
+        notFound = true;
+
+        reject(err);
+      },
+      {
+        timeout: 10000,
+      },
+    ),
+  );
+
 // Change page title
 function changePageTitle(word) {
   const appName = pageTitleDefault.split(" | ").at(-1);
@@ -222,13 +238,25 @@ function convertTemperatureIfNeeded(value, apiUnit, targetUnit) {
 }
 
 // Get error message
-const getErrorMessage = err =>
-  err instanceof TypeError ? undefined : err.message;
+// const getErrorMessage = err =>
+//   err instanceof TypeError ? undefined : err.message;
+
+function getErrorMessage(err) {
+  if (err && typeof err.code === "number") {
+    if (err.code === 1) return "Location access denied.";
+    if (err.code === 2) return "Location unavailable.";
+    if (err.code === 3) return "Unable to get your location.";
+  }
+
+  if (err instanceof TypeError) return undefined;
+
+  return err.message;
+}
 
 // Render error
 function renderError(
   notFound,
-  msg = "We couldn't connect to the server (API error).",
+  msg = "We couldn't connect to the server (API error)",
 ) {
   if (notFound) {
     toggleHiddenClass(mainContentShowcase, false);
@@ -248,7 +276,7 @@ function renderError(
   toggleVisibility(APIErrorContainer, true);
 
   APIErrorContainer.querySelector("#api-error-message").textContent =
-    `${msg} Please try again in a few moments.`;
+    `${msg}. Please try again in a few moments.`;
 }
 
 // Get place
@@ -291,7 +319,7 @@ async function getPlace(place) {
     toggleHiddenClass(notFoundEl, true);
 
     if (!placeForecastResponse.ok)
-      throw new Error("We’re unable to retrieve weather data at the moment.");
+      throw new Error("We’re unable to retrieve weather data at the moment");
 
     placeForecastData = await placeForecastResponse.json();
 
@@ -666,7 +694,7 @@ window.addEventListener("load", function () {
 
         if (!placeForecastResponse.ok)
           throw new Error(
-            "We’re unable to retrieve weather data at the moment.",
+            "We’re unable to retrieve weather data at the moment",
           );
 
         placeForecastData = await placeForecastResponse.json();
@@ -770,5 +798,141 @@ window.addEventListener("load", function () {
         renderError(false, getErrorMessage(err));
       }
     })();
+
+    return;
   }
+
+  (async function () {
+    try {
+      const position = await getPosition();
+      const { latitude: lat, longitude: lng } = position.coords;
+
+      const [placeResponse, placeForecastResponse] = await Promise.all([
+        fetch(
+          `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}`,
+        ),
+        fetch(
+          `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&daily=weather_code,temperature_2m_max,temperature_2m_min&hourly=weather_code,temperature_2m&current=weather_code,temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,precipitation&timezone=auto${isImperial ? "&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch" : ""}`,
+        ),
+      ]);
+
+      if (!placeResponse.ok) {
+        notFound = false;
+
+        throw new Error("Unable to determine your location");
+      }
+
+      if (!placeForecastResponse.ok) {
+        notFound = false;
+
+        throw new Error("We’re unable to retrieve weather data at the moment");
+      }
+
+      toggleHiddenClass(mainContentShowcase, false);
+      toggleHiddenClass(mainContentShowcaseContainer, false);
+
+      toggleHiddenClass(notFoundEl, true);
+
+      const placeData = await placeResponse.json();
+      placeForecastData = await placeForecastResponse.json();
+
+      toggleVisibility(temperatureLoadingBox, false);
+
+      changePageTitle(`${placeData.city}, ${placeData.countryName}`);
+
+      locationEl.textContent = `${placeData.city}, ${placeData.countryName}`;
+      dateEl.textContent = dateTodayFormat;
+
+      currentWeatherIcon.src = getWeatherIconData(
+        placeForecastData.current.weather_code,
+      ).src;
+      currentWeatherIcon.alt = getWeatherIconData(
+        placeForecastData.current.weather_code,
+      ).alt;
+
+      currentTemperature.textContent = `${Math.round(
+        placeForecastData.current.temperature_2m,
+      )}${placeForecastData.current_units.temperature_2m.slice(0, 1)}`;
+
+      apparentTemperature.textContent = `${Math.round(
+        placeForecastData.current.apparent_temperature,
+      )}${placeForecastData.current_units.apparent_temperature.slice(0, 1)}`;
+
+      relativeHumidity.textContent = `${placeForecastData.current.relative_humidity_2m}%`;
+
+      windSpeed.textContent = `${Math.round(
+        placeForecastData.current.wind_speed_10m,
+      )} ${UNITS_MAP.speed[placeForecastData.current_units.wind_speed_10m]}`;
+
+      precipitation.textContent = `${placeForecastData.current.precipitation.toFixed(
+        1,
+      )} ${UNITS_MAP.precipitation[placeForecastData.current_units.precipitation]}`;
+
+      dailyData.querySelectorAll("li").forEach(function (el, i) {
+        el.innerHTML = `
+        <span class="font-medium text-lg leading-tighter capitalize">${new Date(
+          placeForecastData.daily.time[i],
+        ).toLocaleDateString("en-US", { weekday: "short" })}</span>
+        <img src="${
+          getWeatherIconData(placeForecastData.daily.weather_code[i]).src
+        }" alt="${
+          getWeatherIconData(placeForecastData.daily.weather_code[i]).alt
+        }" class="max-h-15" />
+        <div class="font-medium text-base leading-tighter flex items-center justify-between gap-4 self-stretch">
+          <span id="max-temperature">${Math.round(
+            placeForecastData.daily.temperature_2m_max[i],
+          )}${placeForecastData.daily_units.temperature_2m_max.slice(
+            0,
+            1,
+          )}</span>
+          <span id="min-temperature" class="text-neutral-200">${Math.round(
+            placeForecastData.daily.temperature_2m_min[i],
+          )}${placeForecastData.daily_units.temperature_2m_min.slice(
+            0,
+            1,
+          )}</span>
+        </div>
+      `;
+      });
+
+      daysBtn.textContent = new Date(
+        placeForecastData.hourly.time[0],
+      ).toLocaleDateString("en-US", { weekday: "long" });
+
+      hourCount = 0;
+
+      hourlyData.querySelectorAll("li").forEach(function (el, i) {
+        const hourNumber = placeForecastData.hourly.time[i]
+          .split("T")[1]
+          .slice(0, 2);
+        const period = hourNumber >= 12 ? "pm" : "am";
+
+        if (hourNumber > 12) hourCount++;
+
+        const hourFormatted =
+          (hourNumber === "00" && "12") ||
+          (hourNumber > 12 && hourCount) ||
+          (hourNumber.startsWith("0") && hourNumber.slice(1)) ||
+          hourNumber;
+
+        const hour = `${hourFormatted} ${period}`;
+
+        el.innerHTML = `
+        <img src="${
+          getWeatherIconData(placeForecastData.hourly.weather_code[i]).src
+        }" alt="${
+          getWeatherIconData(placeForecastData.hourly.weather_code[i]).alt
+        }" class="h-10" />
+        <span id="hour" class="font-medium text-xl leading-tighter uppercase flex-grow">${hour}</span>
+        <span id="hourly-temperature" class="font-medium text-base leading-tighter">${Math.round(
+          placeForecastData.hourly.temperature_2m[i],
+        )}${placeForecastData.hourly_units.temperature_2m.slice(0, 1)}</span>
+      `;
+      });
+    } catch (err) {
+      changePageTitle(pageTitleDefault.split(" | ").at(0));
+
+      renderError(notFound, getErrorMessage(err));
+    }
+  })();
 });
