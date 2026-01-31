@@ -1,21 +1,24 @@
 "use strict";
 
 // ELEMENTS
+
+// Document head
 const pageTitleEl = document.querySelector("title");
 const pageTitleDefault = pageTitleEl.textContent;
 
+// Header
 const unitsNav = document.querySelector("#units-nav");
 const unitsBtn = document.querySelector("#units-btn");
-const switchUnitsBtn = document.querySelector("#switch-units");
-const switchUnitKeyword = document.querySelector("#switch-unit-keyword");
+const switchUnitsBtn = document.querySelector("#switch-units-btn");
+const unitKeyword = document.querySelector("#unit-keyword");
 const units = document.querySelector("#units");
 
+// Main content
+
+// Main content header
 const mainContentHeaderContainer = document.querySelector(
   "#main-content-header-container",
 );
-const APIErrorContainer = document.querySelector("#api-error-container");
-const retryBtn = document.querySelector("#retry-btn");
-const notFoundEl = document.querySelector("#not-found-paragraph");
 
 const searchInputContainer = document.querySelector("#search-input-container");
 const searchInputField = document.querySelector("#place");
@@ -23,18 +26,17 @@ const searchDropdown = document.querySelector("#search-dropdown");
 const searchLoadingBox = document.querySelector("#search-loading-box");
 const searchBtn = document.querySelector("#search-btn");
 
+// Main content showcase
 const mainContentShowcase = document.querySelector("#main-content-showcase");
 const mainContentShowcaseContainer = document.querySelector(
   "#main-content-showcase-container",
 );
-const temperatureLoadingBox = document.querySelector(
-  "#temperature-loading-box",
-);
+const tempLoadingBox = document.querySelector("#temp-loading-box");
 const locationEl = document.querySelector("#location");
 const dateEl = document.querySelector("#date");
 const currentWeatherIcon = document.querySelector("#current-weather-icon");
-const currentTemperature = document.querySelector("#current-temperature");
-const apparentTemperature = document.querySelector("#apparent-temperature");
+const currentTemp = document.querySelector("#current-temp");
+const apparentTemp = document.querySelector("#apparent-temp");
 const relativeHumidity = document.querySelector("#relative-humidity");
 const windSpeed = document.querySelector("#wind-speed");
 const precipitation = document.querySelector("#precipitation");
@@ -47,16 +49,25 @@ const daysDropdown = document.querySelector("#days-dropdown");
 
 const hourlyData = document.querySelector("#hourly-data");
 
+// Error elements
+const APIErrContainer = document.querySelector("#api-err-container");
+const retryBtn = document.querySelector("#retry-btn");
+const locationErr = document.querySelector("#location-err");
+
 // HELPERS
 let isImperial = JSON.parse(localStorage.getItem("isImperial")) || false;
 
 let places = new Set(JSON.parse(localStorage.getItem("places")) || []);
 
+let targetPlace;
+
 let notFound;
 let placeForecastResponse;
 let placeForecastData;
+
 let hourCount;
 
+// Format today's date
 const dateToday = new Date();
 const dateTodayFormat = `${dateToday.toLocaleDateString("en-US", {
   weekday: "long",
@@ -79,8 +90,8 @@ const UNITS_MAP = {
 // FUNCTIONS
 
 // Get user's current position
-const getPosition = () =>
-  new Promise((resolve, reject) =>
+function getPosition() {
+  return new Promise(function (resolve, reject) {
     navigator.geolocation.getCurrentPosition(
       resolve,
       function (err) {
@@ -91,30 +102,34 @@ const getPosition = () =>
       {
         timeout: 10000,
       },
-    ),
-  );
+    );
+  });
+}
 
-// Change page title
+// Change document title
 function changePageTitle(word) {
   const appName = pageTitleDefault.split(" | ").at(-1);
 
   pageTitleEl.textContent = `${word} | ${appName}`;
 }
 
-// Calculate Celsius to Fahrenheit and vice versa
-const convertTemperature = (value, toImperial) =>
+// Set default document title
+const setDefaultPageTitle = () => (pageTitleEl.textContent = pageTitleDefault);
+
+// Convert Celsius to Fahrenheit and vice versa
+const convertTemp = (value, toImperial) =>
   Math.round(toImperial ? (value * 9) / 5 + 32 : ((value - 32) * 5) / 9);
 
-// Calculate km/h to mph and vice versa
+// Convert km/h to mph and vice versa
 const convertSpeed = (value, toImperial) =>
   Math.round(toImperial ? value * 0.621371 : value * 1.60934);
 
-// Calculate mm to in (inches) and vice versa
+// Convert mm to in (inches) and vice versa
 const convertPrecipitation = (value, toImperial) =>
   (toImperial ? value * 0.0393701 : value * 25.4).toFixed(1);
 
-// Extract numeric value and unit from a formatted string (e.g. "2 km/h", "2°")
-function parseValueAndUnit(str) {
+// Extract numeric value from a formatted string (e.g. "2 km/h", "2°")
+function parseValue(str) {
   const match = str.match(/(-?\d+(?:\.\d+)?)\s*([^\d\s]+)/);
 
   if (!match) return null;
@@ -230,53 +245,137 @@ function getWeatherIconData(weatherCode) {
   }
 }
 
-// Convert hourly temperature if needed
-function convertTemperatureIfNeeded(value, apiUnit, targetUnit) {
-  if (apiUnit === targetUnit) return value;
+// Convert hourly temperature
+function convertHourlyTemp(value, APIUnit, targetUnit) {
+  if (APIUnit === targetUnit) return value;
 
   return targetUnit === "F" ? (value * 9) / 5 + 32 : ((value - 32) * 5) / 9;
 }
 
 // Get error message
-// const getErrorMessage = err =>
-//   err instanceof TypeError ? undefined : err.message;
-
-function getErrorMessage(err) {
+function getErrMessage(err) {
+  // Geolocation-specific errors
   if (err && typeof err.code === "number") {
-    if (err.code === 1) return "Location access denied.";
-    if (err.code === 2) return "Location unavailable.";
-    if (err.code === 3) return "Unable to get your location.";
+    if (err.code === 1) return "Location access denied."; // User blocked location access
+    if (err.code === 2) return "Location unavailable."; // GPS/position unavailable
+    if (err.code === 3) return "Unable to get your location."; // Timeout while fetching location
   }
 
-  if (err instanceof TypeError) return undefined;
+  // Offline scenario (no internet connection)
+  if (!navigator.onLine) return "We couldn't connect to the server (API error)";
 
+  // Default: return the error's original message
   return err.message;
 }
 
-// Render error
-function renderError(
-  notFound,
-  msg = "We couldn't connect to the server (API error)",
-) {
+// Show error
+function displayErr(notFound, msg) {
+  // Display error in main content showcase
   if (notFound) {
     toggleHiddenClass(mainContentShowcase, false);
 
-    toggleHiddenClass(notFoundEl, false);
+    toggleHiddenClass(locationErr, false);
 
-    notFoundEl.textContent = msg;
+    locationErr.textContent = msg;
 
     toggleHiddenClass(mainContentShowcaseContainer, true);
 
     return;
   }
 
+  // Display error in the main content header
   toggleHiddenClass(mainContentHeaderContainer, true);
   toggleHiddenClass(mainContentShowcase, true);
 
-  toggleVisibility(APIErrorContainer, true);
+  toggleVisibility(APIErrContainer, true);
 
-  APIErrorContainer.querySelector("#api-error-message").textContent =
-    `${msg}. Please try again in a few moments.`;
+  APIErrContainer.querySelector("#api-err").textContent = msg;
+}
+
+// Display UI
+function displayUI() {
+  toggleHiddenClass(mainContentShowcase, false);
+  toggleHiddenClass(mainContentShowcaseContainer, false);
+
+  toggleHiddenClass(locationErr, true);
+}
+
+// Render single hourly forecast item
+function renderHourlyItem(element, value, index) {
+  // Format hour
+  const hourNumber = placeForecastData.hourly.time[index]
+    .split("T")[1]
+    .slice(0, 2);
+  const period = hourNumber >= 12 ? "pm" : "am";
+
+  if (hourNumber > 12) hourCount++;
+
+  const hourFormatted =
+    (hourNumber === "00" && "12") ||
+    (hourNumber > 12 && hourCount) ||
+    (hourNumber.startsWith("0") && hourNumber.slice(1)) ||
+    hourNumber;
+
+  const hour = `${hourFormatted} ${period}`;
+
+  // Render and set values to the element
+  element.innerHTML = `
+    <img src="${getWeatherIconData(placeForecastData.hourly.weather_code[index]).src}" alt="${getWeatherIconData(placeForecastData.hourly.weather_code[index]).alt}" class="h-10" />
+    <span id="hour" class="font-medium text-xl leading-tighter uppercase flex-grow">${hour}</span>
+    <span id="hourly-temp" class="font-medium text-base leading-tighter">${Math.round(value)}${placeForecastData.hourly_units.temperature_2m.slice(0, 1)}</span>
+  `;
+}
+
+// Update UI
+function updateUI(place, country) {
+  // Hide temperature loading box
+  toggleVisibility(tempLoadingBox, false);
+
+  // Change document title to the selected place and its country
+  changePageTitle(`${place}, ${country}`);
+
+  locationEl.textContent = `${place}, ${country}`;
+  dateEl.textContent = dateTodayFormat;
+
+  // Set weather icon
+  currentWeatherIcon.src = getWeatherIconData(
+    placeForecastData.current.weather_code,
+  ).src;
+  currentWeatherIcon.alt = getWeatherIconData(
+    placeForecastData.current.weather_code,
+  ).alt;
+
+  // Set current weather data
+  currentTemp.textContent = `${Math.round(placeForecastData.current.temperature_2m)}${placeForecastData.current_units.temperature_2m.slice(0, 1)}`;
+  apparentTemp.textContent = `${Math.round(placeForecastData.current.apparent_temperature)}${placeForecastData.current_units.apparent_temperature.slice(0, 1)}`;
+  relativeHumidity.textContent = `${placeForecastData.current.relative_humidity_2m}%`;
+  windSpeed.textContent = `${Math.round(placeForecastData.current.wind_speed_10m)} ${UNITS_MAP.speed[placeForecastData.current_units.wind_speed_10m]}`;
+  precipitation.textContent = `${placeForecastData.current.precipitation.toFixed(1)} ${UNITS_MAP.precipitation[placeForecastData.current_units.precipitation]}`;
+
+  // Render and set daily weather data
+  dailyData.querySelectorAll("li").forEach(function (el, i) {
+    el.innerHTML = `
+		<span class="font-medium text-lg leading-tighter capitalize">${new Date(placeForecastData.daily.time[i]).toLocaleDateString("en-US", { weekday: "short" })}</span>
+		<img src="${getWeatherIconData(placeForecastData.daily.weather_code[i]).src}" alt="${getWeatherIconData(placeForecastData.daily.weather_code[i]).alt}" class="max-h-15" />
+		<div class="font-medium text-base leading-tighter flex items-center justify-between gap-4 self-stretch">
+			<span id="max-temp">${Math.round(placeForecastData.daily.temperature_2m_max[i])}${placeForecastData.daily_units.temperature_2m_max.slice(0, 1)}</span>
+			<span id="min-temp" class="text-neutral-200">${Math.round(placeForecastData.daily.temperature_2m_min[i])}${placeForecastData.daily_units.temperature_2m_min.slice(0, 1)}</span>
+		</div>
+	`;
+  });
+
+  // Render and set hourly weather data
+  daysBtn.textContent = new Date(
+    placeForecastData.hourly.time[0],
+  ).toLocaleDateString("en-US", { weekday: "long" });
+
+  hourCount = 0;
+
+  hourlyData
+    .querySelectorAll("li")
+    .forEach((el, i) =>
+      renderHourlyItem(el, placeForecastData.hourly.temperature_2m[i], i),
+    );
 }
 
 // Get place
@@ -289,9 +388,13 @@ async function getPlace(place) {
         place,
       )}&count=1&language=en&format=json`,
     );
+
+    if (!placeResponse.ok)
+      throw new Error("Unable to fetch place data from server");
+
     const { results: placeData } = await placeResponse.json();
 
-    if (!placeData || !placeResponse.ok) {
+    if (!placeData) {
       notFound = true;
 
       throw new Error("No search result found!");
@@ -313,113 +416,18 @@ async function getPlace(place) {
       `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&daily=weather_code,temperature_2m_max,temperature_2m_min&hourly=weather_code,temperature_2m&current=weather_code,temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,precipitation&timezone=auto${isImperial ? "&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch" : ""}`,
     );
 
-    toggleHiddenClass(mainContentShowcase, false);
-    toggleHiddenClass(mainContentShowcaseContainer, false);
-
-    toggleHiddenClass(notFoundEl, true);
+    displayUI();
 
     if (!placeForecastResponse.ok)
       throw new Error("We’re unable to retrieve weather data at the moment");
 
     placeForecastData = await placeForecastResponse.json();
 
-    toggleVisibility(temperatureLoadingBox, false);
-
-    changePageTitle(`${name}, ${country}`);
-
-    locationEl.textContent = `${name}, ${country}`;
-    dateEl.textContent = dateTodayFormat;
-
-    currentWeatherIcon.src = getWeatherIconData(
-      placeForecastData.current.weather_code,
-    ).src;
-    currentWeatherIcon.alt = getWeatherIconData(
-      placeForecastData.current.weather_code,
-    ).alt;
-
-    currentTemperature.textContent = `${Math.round(
-      placeForecastData.current.temperature_2m,
-    )}${placeForecastData.current_units.temperature_2m.slice(0, 1)}`;
-
-    apparentTemperature.textContent = `${Math.round(
-      placeForecastData.current.apparent_temperature,
-    )}${placeForecastData.current_units.apparent_temperature.slice(0, 1)}`;
-
-    relativeHumidity.textContent = `${placeForecastData.current.relative_humidity_2m}%`;
-
-    windSpeed.textContent = `${Math.round(
-      placeForecastData.current.wind_speed_10m,
-    )} ${UNITS_MAP.speed[placeForecastData.current_units.wind_speed_10m]}`;
-
-    precipitation.textContent = `${placeForecastData.current.precipitation.toFixed(
-      1,
-    )} ${UNITS_MAP.precipitation[placeForecastData.current_units.precipitation]}`;
-
-    dailyData.querySelectorAll("li").forEach(function (el, i) {
-      el.innerHTML = `
-        <span class="font-medium text-lg leading-tighter capitalize">${new Date(
-          placeForecastData.daily.time[i],
-        ).toLocaleDateString("en-US", { weekday: "short" })}</span>
-        <img src="${
-          getWeatherIconData(placeForecastData.daily.weather_code[i]).src
-        }" alt="${
-          getWeatherIconData(placeForecastData.daily.weather_code[i]).alt
-        }" class="max-h-15" />
-        <div class="font-medium text-base leading-tighter flex items-center justify-between gap-4 self-stretch">
-          <span id="max-temperature">${Math.round(
-            placeForecastData.daily.temperature_2m_max[i],
-          )}${placeForecastData.daily_units.temperature_2m_max.slice(
-            0,
-            1,
-          )}</span>
-          <span id="min-temperature" class="text-neutral-200">${Math.round(
-            placeForecastData.daily.temperature_2m_min[i],
-          )}${placeForecastData.daily_units.temperature_2m_min.slice(
-            0,
-            1,
-          )}</span>
-        </div>
-      `;
-    });
-
-    daysBtn.textContent = new Date(
-      placeForecastData.hourly.time[0],
-    ).toLocaleDateString("en-US", { weekday: "long" });
-
-    hourCount = 0;
-
-    hourlyData.querySelectorAll("li").forEach(function (el, i) {
-      const hourNumber = placeForecastData.hourly.time[i]
-        .split("T")[1]
-        .slice(0, 2);
-      const period = hourNumber >= 12 ? "pm" : "am";
-
-      if (hourNumber > 12) hourCount++;
-
-      const hourFormatted =
-        (hourNumber === "00" && "12") ||
-        (hourNumber > 12 && hourCount) ||
-        (hourNumber.startsWith("0") && hourNumber.slice(1)) ||
-        hourNumber;
-
-      const hour = `${hourFormatted} ${period}`;
-
-      el.innerHTML = `
-        <img src="${
-          getWeatherIconData(placeForecastData.hourly.weather_code[i]).src
-        }" alt="${
-          getWeatherIconData(placeForecastData.hourly.weather_code[i]).alt
-        }" class="h-10" />
-        <span id="hour" class="font-medium text-xl leading-tighter uppercase flex-grow">${hour}</span>
-        <span id="hourly-temperature" class="font-medium text-base leading-tighter">${Math.round(
-          placeForecastData.hourly.temperature_2m[i],
-        )}${placeForecastData.hourly_units.temperature_2m.slice(0, 1)}</span>
-      `;
-    });
+    updateUI(name, country);
   } catch (err) {
-    changePageTitle(pageTitleDefault.split(" | ").at(0));
+    setDefaultPageTitle();
 
-    renderError(notFound, getErrorMessage(err));
+    displayErr(notFound, getErrMessage(err));
   }
 
   toggleVisibility(searchLoadingBox, false);
@@ -428,8 +436,9 @@ async function getPlace(place) {
 // Load search history from local storage
 if (places.size) renderSearchDropdown();
 
+// Update active unit indicator when imperial units are selected
 if (isImperial) {
-  switchUnitKeyword.textContent = "metric";
+  unitKeyword.textContent = "metric";
 
   units
     .querySelectorAll(".unit")
@@ -462,7 +471,7 @@ hourlyData.innerHTML = Array.from({
 
 // EVENTS
 
-// Show units
+// Show/hide units
 unitsBtn.addEventListener("click", () => unitsNav.classList.toggle("active"));
 
 // Switch units
@@ -471,35 +480,37 @@ switchUnitsBtn.addEventListener("click", function () {
 
   localStorage.setItem("isImperial", isImperial);
 
-  switchUnitKeyword.textContent = isImperial ? "metric" : "imperial";
+  unitKeyword.textContent = isImperial ? "metric" : "imperial";
 
   units
     .querySelectorAll(".unit")
     .forEach(unit => unit.classList.toggle("active-unit"));
 
+  // Convert all values only when weather values are displayed
   if (
     !mainContentShowcase.classList.contains("hidden") &&
-    notFoundEl.classList.contains("hidden")
+    locationErr.classList.contains("hidden")
   ) {
+    // Update all temperature, speed and precipitation elements with converted values
     document
-      .querySelectorAll("span[id*='temperature'")
+      .querySelectorAll("span[id*='temp'")
       .forEach(
         el =>
-          (el.textContent = `${convertTemperature(parseValueAndUnit(el.textContent), isImperial)}${placeForecastData.current_units.temperature_2m.slice(0, 1)}`),
+          (el.textContent = `${convertTemp(parseValue(el.textContent), isImperial)}${placeForecastData.current_units.temperature_2m.slice(0, 1)}`),
       );
 
     document
       .querySelectorAll("span[id*='speed']")
       .forEach(
         el =>
-          (el.textContent = `${convertSpeed(parseValueAndUnit(el.textContent), isImperial)} ${isImperial ? "mph" : "km/h"}`),
+          (el.textContent = `${convertSpeed(parseValue(el.textContent), isImperial)} ${isImperial ? "mph" : "km/h"}`),
       );
 
     document
       .querySelectorAll("span[id*='precipitation']")
       .forEach(
         el =>
-          (el.textContent = `${convertPrecipitation(parseValueAndUnit(el.textContent), isImperial)} ${isImperial ? "in" : "mm"}`),
+          (el.textContent = `${convertPrecipitation(parseValue(el.textContent), isImperial)} ${isImperial ? "in" : "mm"}`),
       );
   }
 });
@@ -543,9 +554,11 @@ searchDropdown.addEventListener("click", function (e) {
     return;
   }
 
-  // Hide search history and show loading box
+  // Trigger place search, hide search history and show loading box
   if (placeBtn) {
-    getPlace(placeName);
+    targetPlace = placeName;
+
+    getPlace(targetPlace);
 
     toggleVisibility(searchDropdown, false);
     toggleVisibility(searchLoadingBox, true);
@@ -553,16 +566,21 @@ searchDropdown.addEventListener("click", function (e) {
 });
 
 searchBtn.addEventListener("click", function () {
+  // Set searched place
+  targetPlace = searchInputField.value.trim();
+
   // Show warning if search field is empty
-  if (!searchInputField.value.trim()) {
+  if (!targetPlace) {
     alert("Please enter a location before searching.");
 
     return;
   }
 
-  getPlace(searchInputField.value.trim());
+  // Trigger place search
+  getPlace(targetPlace);
 
-  places.add(searchInputField.value.trim().toLowerCase());
+  // Save searched place
+  places.add(targetPlace.toLowerCase());
 
   localStorage.setItem("places", JSON.stringify([...places]));
 
@@ -574,26 +592,34 @@ searchBtn.addEventListener("click", function () {
 });
 
 retryBtn.addEventListener("click", function () {
-  toggleVisibility(APIErrorContainer, false);
+  // Retry the place search
+  getPlace(targetPlace);
+
+  // Reset UI
+  toggleVisibility(APIErrContainer, false);
 
   toggleHiddenClass(mainContentHeaderContainer, false);
 
+  toggleVisibility(searchLoadingBox, true);
+
   toggleHiddenClass(mainContentShowcase, true);
-  toggleHiddenClass(notFoundEl, true);
+  toggleHiddenClass(locationErr, true);
 
   toggleHiddenClass(mainContentShowcaseContainer, false);
 });
 
-// Show days
+// Show/hide days
 daysBtn.addEventListener("click", () => daysNav.classList.toggle("active"));
 
 daysDropdown.addEventListener("click", function (e) {
   const dayBtn = e.target.closest("button");
   const dayName = dayBtn ? dayBtn.textContent.trim() : undefined;
 
+  // Render and display hourly forecast for the selected day (excluding the currently displayed day)
   if (dayBtn && dayName !== daysBtn.textContent.toLowerCase()) {
     hourCount = 0;
 
+    // Find index of the selected day in the forecast data
     const indexOfDay = placeForecastData.hourly.time
       .map(day =>
         new Date(day.split("T")[0])
@@ -604,47 +630,26 @@ daysDropdown.addEventListener("click", function (e) {
       )
       .indexOf(dayName);
 
-    const apiUnit = placeForecastData.current_units.temperature_2m.includes("F")
+    // Determine API and target units for temperature conversion
+    const APIUnit = placeForecastData.current_units.temperature_2m.includes("F")
       ? "F"
       : "C";
     const targetUnit = isImperial ? "F" : "C";
 
+    // Render hourly items for the selected day with converted temperature values
     hourlyData.querySelectorAll("li").forEach(function (el, i) {
       const index = i + indexOfDay;
 
-      const hourNumber = placeForecastData.hourly.time[index]
-        .split("T")[1]
-        .slice(0, 2);
-      const period = hourNumber >= 12 ? "pm" : "am";
-
-      if (hourNumber > 12) hourCount++;
-
-      const hourFormatted =
-        (hourNumber === "00" && "12") ||
-        (hourNumber > 12 && hourCount) ||
-        (hourNumber.startsWith("0") && hourNumber.slice(1)) ||
-        hourNumber;
-
-      const hour = `${hourFormatted} ${period}`;
-
-      el.innerHTML = `
-        <img src="${
-          getWeatherIconData(placeForecastData.hourly.weather_code[index]).src
-        }" alt="${
-          getWeatherIconData(placeForecastData.hourly.weather_code[index]).alt
-        }" class="h-10" />
-        <span id="hour" class="font-medium text-xl leading-tighter uppercase flex-grow">${hour}</span>
-        <span id="hourly-temperature" class="font-medium text-base leading-tighter">${Math.round(
-          convertTemperatureIfNeeded(
-            placeForecastData.hourly.temperature_2m[index],
-            apiUnit,
-            targetUnit,
-          ),
-        )}${placeForecastData.hourly_units.temperature_2m.slice(0, 1)}</span>
-      `;
+      renderHourlyItem(
+        el,
+        convertHourlyTemp(
+          placeForecastData.hourly.temperature_2m[index],
+          APIUnit,
+          targetUnit,
+        ),
+        index,
+      );
     });
-
-    // (placeForecastData.hourly.temperature_2m[index] * 9) / 5 + 32
 
     daysBtn.textContent = dayName;
   }
@@ -676,6 +681,7 @@ window.addEventListener("click", function (e) {
 });
 
 window.addEventListener("load", function () {
+  // Display forecast for the last searched place if it is stored
   if (JSON.parse(this.localStorage.getItem("selectedPlace"))) {
     const { lat, lng, name, country } = JSON.parse(
       this.localStorage.getItem("selectedPlace"),
@@ -687,10 +693,7 @@ window.addEventListener("load", function () {
           `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&daily=weather_code,temperature_2m_max,temperature_2m_min&hourly=weather_code,temperature_2m&current=weather_code,temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,precipitation&timezone=auto${isImperial ? "&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch" : ""}`,
         );
 
-        toggleHiddenClass(mainContentShowcase, false);
-        toggleHiddenClass(mainContentShowcaseContainer, false);
-
-        toggleHiddenClass(notFoundEl, true);
+        displayUI();
 
         if (!placeForecastResponse.ok)
           throw new Error(
@@ -699,109 +702,18 @@ window.addEventListener("load", function () {
 
         placeForecastData = await placeForecastResponse.json();
 
-        toggleVisibility(temperatureLoadingBox, false);
-
-        changePageTitle(`${name}, ${country}`);
-
-        locationEl.textContent = `${name}, ${country}`;
-        dateEl.textContent = dateTodayFormat;
-
-        currentWeatherIcon.src = getWeatherIconData(
-          placeForecastData.current.weather_code,
-        ).src;
-        currentWeatherIcon.alt = getWeatherIconData(
-          placeForecastData.current.weather_code,
-        ).alt;
-
-        currentTemperature.textContent = `${Math.round(
-          placeForecastData.current.temperature_2m,
-        )}${placeForecastData.current_units.temperature_2m.slice(0, 1)}`;
-
-        apparentTemperature.textContent = `${Math.round(
-          placeForecastData.current.apparent_temperature,
-        )}${placeForecastData.current_units.apparent_temperature.slice(0, 1)}`;
-
-        relativeHumidity.textContent = `${placeForecastData.current.relative_humidity_2m}%`;
-
-        windSpeed.textContent = `${Math.round(
-          placeForecastData.current.wind_speed_10m,
-        )} ${UNITS_MAP.speed[placeForecastData.current_units.wind_speed_10m]}`;
-
-        precipitation.textContent = `${placeForecastData.current.precipitation.toFixed(
-          1,
-        )} ${UNITS_MAP.precipitation[placeForecastData.current_units.precipitation]}`;
-
-        dailyData.querySelectorAll("li").forEach(function (el, i) {
-          el.innerHTML = `
-        <span class="font-medium text-lg leading-tighter capitalize">${new Date(
-          placeForecastData.daily.time[i],
-        ).toLocaleDateString("en-US", { weekday: "short" })}</span>
-        <img src="${
-          getWeatherIconData(placeForecastData.daily.weather_code[i]).src
-        }" alt="${
-          getWeatherIconData(placeForecastData.daily.weather_code[i]).alt
-        }" class="max-h-15" />
-        <div class="font-medium text-base leading-tighter flex items-center justify-between gap-4 self-stretch">
-          <span id="max-temperature">${Math.round(
-            placeForecastData.daily.temperature_2m_max[i],
-          )}${placeForecastData.daily_units.temperature_2m_max.slice(
-            0,
-            1,
-          )}</span>
-          <span id="min-temperature" class="text-neutral-200">${Math.round(
-            placeForecastData.daily.temperature_2m_min[i],
-          )}${placeForecastData.daily_units.temperature_2m_min.slice(
-            0,
-            1,
-          )}</span>
-        </div>
-      `;
-        });
-
-        daysBtn.textContent = new Date(
-          placeForecastData.hourly.time[0],
-        ).toLocaleDateString("en-US", { weekday: "long" });
-
-        hourCount = 0;
-
-        hourlyData.querySelectorAll("li").forEach(function (el, i) {
-          const hourNumber = placeForecastData.hourly.time[i]
-            .split("T")[1]
-            .slice(0, 2);
-          const period = hourNumber >= 12 ? "pm" : "am";
-
-          if (hourNumber > 12) hourCount++;
-
-          const hourFormatted =
-            (hourNumber === "00" && "12") ||
-            (hourNumber > 12 && hourCount) ||
-            (hourNumber.startsWith("0") && hourNumber.slice(1)) ||
-            hourNumber;
-
-          const hour = `${hourFormatted} ${period}`;
-
-          el.innerHTML = `
-        <img src="${
-          getWeatherIconData(placeForecastData.hourly.weather_code[i]).src
-        }" alt="${
-          getWeatherIconData(placeForecastData.hourly.weather_code[i]).alt
-        }" class="h-10" />
-        <span id="hour" class="font-medium text-xl leading-tighter uppercase flex-grow">${hour}</span>
-        <span id="hourly-temperature" class="font-medium text-base leading-tighter">${Math.round(
-          placeForecastData.hourly.temperature_2m[i],
-        )}${placeForecastData.hourly_units.temperature_2m.slice(0, 1)}</span>
-      `;
-        });
+        updateUI(name, country);
       } catch (err) {
-        changePageTitle(pageTitleDefault.split(" | ").at(0));
+        setDefaultPageTitle();
 
-        renderError(false, getErrorMessage(err));
+        displayErr(false, getErrMessage(err));
       }
     })();
 
     return;
   }
 
+  // Display forecast for the place obtained from the user's current location
   (async function () {
     try {
       const position = await getPosition();
@@ -816,6 +728,8 @@ window.addEventListener("load", function () {
         ),
       ]);
 
+      displayUI();
+
       if (!placeResponse.ok) {
         notFound = false;
 
@@ -828,111 +742,14 @@ window.addEventListener("load", function () {
         throw new Error("We’re unable to retrieve weather data at the moment");
       }
 
-      toggleHiddenClass(mainContentShowcase, false);
-      toggleHiddenClass(mainContentShowcaseContainer, false);
-
-      toggleHiddenClass(notFoundEl, true);
-
       const placeData = await placeResponse.json();
       placeForecastData = await placeForecastResponse.json();
 
-      toggleVisibility(temperatureLoadingBox, false);
-
-      changePageTitle(`${placeData.city}, ${placeData.countryName}`);
-
-      locationEl.textContent = `${placeData.city}, ${placeData.countryName}`;
-      dateEl.textContent = dateTodayFormat;
-
-      currentWeatherIcon.src = getWeatherIconData(
-        placeForecastData.current.weather_code,
-      ).src;
-      currentWeatherIcon.alt = getWeatherIconData(
-        placeForecastData.current.weather_code,
-      ).alt;
-
-      currentTemperature.textContent = `${Math.round(
-        placeForecastData.current.temperature_2m,
-      )}${placeForecastData.current_units.temperature_2m.slice(0, 1)}`;
-
-      apparentTemperature.textContent = `${Math.round(
-        placeForecastData.current.apparent_temperature,
-      )}${placeForecastData.current_units.apparent_temperature.slice(0, 1)}`;
-
-      relativeHumidity.textContent = `${placeForecastData.current.relative_humidity_2m}%`;
-
-      windSpeed.textContent = `${Math.round(
-        placeForecastData.current.wind_speed_10m,
-      )} ${UNITS_MAP.speed[placeForecastData.current_units.wind_speed_10m]}`;
-
-      precipitation.textContent = `${placeForecastData.current.precipitation.toFixed(
-        1,
-      )} ${UNITS_MAP.precipitation[placeForecastData.current_units.precipitation]}`;
-
-      dailyData.querySelectorAll("li").forEach(function (el, i) {
-        el.innerHTML = `
-        <span class="font-medium text-lg leading-tighter capitalize">${new Date(
-          placeForecastData.daily.time[i],
-        ).toLocaleDateString("en-US", { weekday: "short" })}</span>
-        <img src="${
-          getWeatherIconData(placeForecastData.daily.weather_code[i]).src
-        }" alt="${
-          getWeatherIconData(placeForecastData.daily.weather_code[i]).alt
-        }" class="max-h-15" />
-        <div class="font-medium text-base leading-tighter flex items-center justify-between gap-4 self-stretch">
-          <span id="max-temperature">${Math.round(
-            placeForecastData.daily.temperature_2m_max[i],
-          )}${placeForecastData.daily_units.temperature_2m_max.slice(
-            0,
-            1,
-          )}</span>
-          <span id="min-temperature" class="text-neutral-200">${Math.round(
-            placeForecastData.daily.temperature_2m_min[i],
-          )}${placeForecastData.daily_units.temperature_2m_min.slice(
-            0,
-            1,
-          )}</span>
-        </div>
-      `;
-      });
-
-      daysBtn.textContent = new Date(
-        placeForecastData.hourly.time[0],
-      ).toLocaleDateString("en-US", { weekday: "long" });
-
-      hourCount = 0;
-
-      hourlyData.querySelectorAll("li").forEach(function (el, i) {
-        const hourNumber = placeForecastData.hourly.time[i]
-          .split("T")[1]
-          .slice(0, 2);
-        const period = hourNumber >= 12 ? "pm" : "am";
-
-        if (hourNumber > 12) hourCount++;
-
-        const hourFormatted =
-          (hourNumber === "00" && "12") ||
-          (hourNumber > 12 && hourCount) ||
-          (hourNumber.startsWith("0") && hourNumber.slice(1)) ||
-          hourNumber;
-
-        const hour = `${hourFormatted} ${period}`;
-
-        el.innerHTML = `
-        <img src="${
-          getWeatherIconData(placeForecastData.hourly.weather_code[i]).src
-        }" alt="${
-          getWeatherIconData(placeForecastData.hourly.weather_code[i]).alt
-        }" class="h-10" />
-        <span id="hour" class="font-medium text-xl leading-tighter uppercase flex-grow">${hour}</span>
-        <span id="hourly-temperature" class="font-medium text-base leading-tighter">${Math.round(
-          placeForecastData.hourly.temperature_2m[i],
-        )}${placeForecastData.hourly_units.temperature_2m.slice(0, 1)}</span>
-      `;
-      });
+      updateUI(placeData.city, placeData.countryName);
     } catch (err) {
-      changePageTitle(pageTitleDefault.split(" | ").at(0));
+      setDefaultPageTitle();
 
-      renderError(notFound, getErrorMessage(err));
+      displayErr(notFound, getErrMessage(err));
     }
   })();
 });

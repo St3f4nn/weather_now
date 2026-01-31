@@ -50,9 +50,9 @@
             id="units-dropdown">
             <button
               class="block w-full text-left font-medium text-base leading-tighter py-2.5 px-2 bg-transparent hover:bg-neutral-700 rounded-lg outline outline-1 outline-transparent focus:outline-white focus:outline-offset-1 transition-all duration-150 shadow-[0_0_0_0.0625rem_transparent] focus:shadow-neutral-900"
-              id="switch-units">
+              id="switch-units-btn">
               Switch to
-              <span class="capitalize" id="switch-unit-keyword">imperial</span>
+              <span class="capitalize" id="unit-keyword">imperial</span>
             </button>
             <ul class="flex flex-col divide-y divide-neutral-600" id="units">
               <li class="flex flex-col gap-1 py-1">
@@ -143,7 +143,7 @@
         <!-- API error -->
         <div
           class="container hidden flex-col items-center gap-6 pt-10"
-          id="api-error-container">
+          id="api-err-container">
           <img
             src="./assets/images/icon-error.svg"
             alt="Error icon"
@@ -153,8 +153,9 @@
             Something went wrong
           </h2>
           <p
-            class="font-medium text-xl leading-tighter text-neutral-200 text-center max-w-138.5"
-            id="api-error-message"></p>
+            class="font-medium text-xl leading-tighter text-neutral-200 text-center max-w-138.5">
+            <span id="api-err"></span>. Please try again in a few moments.
+          </p>
           <button
             class="font-medium text-base leading-tighter capitalize bg-neutral-800 rounded-lg flex items-center gap-2.5 py-3 px-4 outline outline-2 outline-transparent focus:outline-white focus:outline-offset-3 transition-all duration-150"
             id="retry-btn">
@@ -170,7 +171,7 @@
       <section class="hidden mt-8 lg:mt-12" id="main-content-showcase">
         <p
           class="hidden font-bold text-2.8xl leading-tighter text-center"
-          id="not-found-paragraph"></p>
+          id="location-err"></p>
         <div
           class="container grid lg:grid-cols-[25fr_12fr] gap-8"
           id="main-content-showcase-container">
@@ -184,7 +185,7 @@
                 <!-- Temperature loading -->
                 <div
                   class="bg-no-repeat bg-center bg-cover bg-neutral-800 absolute top-0 left-0 w-full h-full z-20 flex flex-col gap-3.5 items-center justify-center px-6 py-10.25 md:py-20.75"
-                  id="temperature-loading-box">
+                  id="temp-loading-box">
                   <!-- Temperature loading dots -->
                   <div class="flex items-center gap-2.5">
                     <div
@@ -211,7 +212,7 @@
                   class="flex items-center justify-center md:justify-start gap-5">
                   <img class="h-30" id="current-weather-icon" />
                   <span
-                    id="current-temperature"
+                    id="current-temp"
                     class="font-semibold italic text-8xl block"></span>
                 </div>
               </div>
@@ -225,7 +226,7 @@
                     feels like
                   </h4>
                   <span
-                    id="apparent-temperature"
+                    id="apparent-temp"
                     class="font-light text-3.24xl leading-none"
                     >–</span
                   >
