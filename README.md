@@ -43,7 +43,7 @@ Users should be able to:
 
 ### Links
 
-- Solution URL: [Add solution URL here](https://your-solution-url.com)
+- Solution URL: [https://www.frontendmentor.io/solutions/weather-application-built-with-tailwindcss-and-vanilla-javascript-ggPiGpDABr]
 - Live Site URL: [https://app-weathernow.netlify.app/]
 
 ## Tech Stack
