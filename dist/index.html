@@ -1,28 +1,17 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="See current weather, daily forecasts, wind, humidity and clear visual conditions for any city worldwide." />
-    <meta
-      name="keywords"
-      content="weather app, real-time forecast, current conditions, wind speed, city weather, temperature wind" />
+    <meta name="description" content="See current weather, daily forecasts, wind, humidity and clear visual conditions for any city worldwide." />
+    <meta name="keywords" content="weather app, real-time forecast, current conditions, wind speed, city weather, temperature wind" />
     <meta name="author" content="Stefan Gajić" />
-    <link
-      rel="shortcut icon"
-      href="./assets/images/favicon/favicon.png"
-      type="image/x-icon" />
-    <link
-      rel="apple-touch-icon"
-      href="./assets/images/favicon/apple_touch_icon.png" />
+    <link rel="shortcut icon" href="./assets/images/favicon/favicon.png" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="./assets/images/favicon/apple_touch_icon.png" />
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap"
-      rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="./css/output.css" />
     <script defer src="./js/script.js"></script>
     <title>Weather Forecast | Weather Now</title>
@@ -30,52 +19,28 @@
   <body class="font-dm-sans bg-neutral-900 text-white">
     <!-- Header -->
     <header class="pt-4 md:pt-6 xl:pt-12">
-      <div
-        class="container relative flex items-center justify-between gap-4 md:gap-6">
+      <div class="container relative flex items-center justify-between gap-4 md:gap-6">
         <!-- Logo -->
-        <img
-          src="./assets/images/logo.svg"
-          alt="Weather Now logo"
-          class="h-7 md:h-10 min-w-0" />
+        <img src="./assets/images/logo.svg" alt="Weather Now logo" class="h-7 md:h-10 min-w-0" />
         <!-- Units navigation -->
         <nav id="units-nav">
-          <button
-            class="bg-neutral-800 font-medium text-sm leading-tighter md:text-base md:leading-tighter py-2 pr-6.25 pl-7.5 md:py-3 md:pr-9.5 md:pl-10.5 rounded-md md:rounded-lg relative before:contet-[''] before:bg-[url('../assets/images/icon-units.svg')] before:inline-block before:h-3.5 before:w-3.5 md:before:h-4 md:before:w-4 before:bg-no-repeat before:bg-center before:bg-cover before:absolute before:top-1/2 before:-translate-y-1/2 before:left-2.5 md:before:left-4 after:content-[''] after:bg-[url('../assets/images/icon-dropdown.svg')] after:inline-block after:h-3.5 after:w-2.25 md:after:h-4.5 md:after:w-3 after:bg-no-repeat after:bg-center after:bg-contain after:absolute after:top-1/2 after:-translate-y-1/2 after:right-2.5 md:after:right-4 outline outline-2 outline-transparent focus:outline-white focus:outline-offset-3 transition-all duration-150 capitalize"
-            id="units-btn">
-            units
-          </button>
+          <button class="bg-neutral-800 font-medium text-sm leading-tighter md:text-base md:leading-tighter py-2 pr-6.25 pl-7.5 md:py-3 md:pr-9.5 md:pl-10.5 rounded-md md:rounded-lg relative before:contet-[''] before:bg-[url('../assets/images/icon-units.svg')] before:inline-block before:h-3.5 before:w-3.5 md:before:h-4 md:before:w-4 before:bg-no-repeat before:bg-center before:bg-cover before:absolute before:top-1/2 before:-translate-y-1/2 before:left-2.5 md:before:left-4 after:content-[''] after:bg-[url('../assets/images/icon-dropdown.svg')] after:inline-block after:h-3.5 after:w-2.25 md:after:h-4.5 md:after:w-3 after:bg-no-repeat after:bg-center after:bg-contain after:absolute after:top-1/2 after:-translate-y-1/2 after:right-2.5 md:after:right-4 outline outline-2 outline-transparent focus:outline-white focus:outline-offset-3 transition-all duration-150 capitalize" id="units-btn">units</button>
           <!-- Units dropdown -->
-          <div
-            class="bg-neutral-800 px-2 pt-1.5 pb-0.5 rounded-xl shadow-[inset_0_0_0_0.0625rem_rgba(60,59,94,1),_0_0.5rem_1rem_0_rgba(2,1,44,0.32)] absolute top-full z-40 right-4 md:right-6 mt-2.5 hidden w-[min(13.375rem,calc(100%-2rem))]"
-            id="units-dropdown">
-            <button
-              class="block w-full text-left font-medium text-base leading-tighter py-2.5 px-2 bg-transparent hover:bg-neutral-700 rounded-lg outline outline-1 outline-transparent focus:outline-white focus:outline-offset-1 transition-all duration-150 shadow-[0_0_0_0.0625rem_transparent] focus:shadow-neutral-900"
-              id="switch-units-btn">
-              Switch to
-              <span class="capitalize" id="unit-keyword">imperial</span>
-            </button>
+          <div class="bg-neutral-800 px-2 pt-1.5 pb-0.5 rounded-xl shadow-[inset_0_0_0_0.0625rem_rgba(60,59,94,1),_0_0.5rem_1rem_0_rgba(2,1,44,0.32)] absolute top-full z-40 right-4 md:right-6 mt-2.5 hidden w-[min(13.375rem,calc(100%-2rem))]" id="units-dropdown">
+            <button class="block w-full text-left font-medium text-base leading-tighter py-2.5 px-2 bg-transparent hover:bg-neutral-700 rounded-lg outline outline-1 outline-transparent focus:outline-white focus:outline-offset-1 transition-all duration-150 shadow-[0_0_0_0.0625rem_transparent] focus:shadow-neutral-900" id="switch-units-btn">Switch to <span class="capitalize" id="unit-keyword">imperial</span></button>
             <ul class="flex flex-col divide-y divide-neutral-600" id="units">
               <li class="flex flex-col gap-1 py-1">
-                <small
-                  class="block capitalize font-medium text-sm leading-tighter text-neutral-300 pt-1.5 px-2"
-                  >temperature</small
-                >
+                <small class="block capitalize font-medium text-sm leading-tighter text-neutral-300 pt-1.5 px-2">temperature</small>
                 <p class="unit mt-1 active-unit">Celsius (°C)</p>
                 <p class="unit" aria-label="imperial">Fahrenheit (°F)</p>
               </li>
               <li class="flex flex-col gap-1 py-1">
-                <small
-                  class="block capitalize font-medium text-sm leading-tighter text-neutral-300 pt-1.5 px-2"
-                  >wind speed</small
-                >
+                <small class="block capitalize font-medium text-sm leading-tighter text-neutral-300 pt-1.5 px-2">wind speed</small>
                 <p class="unit mt-1 active-unit">km/h</p>
                 <p class="unit" aria-label="imperial">mph</p>
               </li>
               <li class="flex flex-col gap-1 py-1">
-                <small
-                  class="block capitalize font-medium text-sm leading-tighter text-neutral-300 pt-1.5 px-2"
-                  >precipitation</small
-                >
+                <small class="block capitalize font-medium text-sm leading-tighter text-neutral-300 pt-1.5 px-2">precipitation</small>
                 <p class="unit mt-1 active-unit">Millimeters (mm)</p>
                 <p class="unit" aria-label="imperial">Inches (in)</p>
               </li>
@@ -89,248 +54,115 @@
       <!-- Main content header -->
       <header>
         <div class="container" id="main-content-header-container">
-          <h1
-            class="font-bricolage-grotesque font-bold text-5.25xl leading-tighter text-center max-w-120.5 mx-auto lg:max-w-max">
-            How's the sky looking today?
-          </h1>
+          <h1 class="font-bricolage-grotesque font-bold text-5.25xl leading-tighter text-center max-w-120.5 mx-auto lg:max-w-max">How's the sky looking today?</h1>
           <!-- Search container -->
-          <section
-            id="search-container"
-            class="lg:max-w-164 flex flex-col md:flex-row gap-3 md:gap-4 mx-auto mt-12 lg:mt-16">
+          <section id="search-container" class="lg:max-w-164 flex flex-col md:flex-row gap-3 md:gap-4 mx-auto mt-12 lg:mt-16">
             <!-- Search input container -->
-            <div
-              class="relative flex items-center gap-4 bg-neutral-800 pl-6 rounded-xl outline outline-2 outline-transparent focus-within:outline-white focus-within:outline-offset-3 transition-all duration-150 flex-grow flex-shrink-0"
-              id="search-input-container">
+            <div class="relative flex items-center gap-4 bg-neutral-800 pl-6 rounded-xl outline outline-2 outline-transparent focus-within:outline-white focus-within:outline-offset-3 transition-all duration-150 flex-grow flex-shrink-0" id="search-input-container">
               <!-- Search label -->
               <label for="place" class="flex-shrink-0 cursor-pointer">
-                <img
-                  src="./assets/images/icon-search.svg"
-                  alt="Search icon"
-                  class="h-5" />
+                <img src="./assets/images/icon-search.svg" alt="Search icon" class="h-5" />
               </label>
               <!-- Search field -->
-              <input
-                type="text"
-                id="place"
-                name="place"
-                placeholder="Search for a place..."
-                class="font-dm-sans font-medium text-xl leading-tighter placeholder:text-neutral-200 bg-transparent focus:outline-none flex-grow w-full py-4 pr-6" />
+              <input type="text" id="place" name="place" placeholder="Search for a place..." class="font-dm-sans font-medium text-xl leading-tighter placeholder:text-neutral-200 bg-transparent focus:outline-none flex-grow w-full py-4 pr-6" />
               <!-- Search dropdown -->
-              <div
-                class="absolute top-full left-0 w-full bg-neutral-800 shadow-search hidden flex-col gap-1 mt-2.5 z-30 p-2 rounded-xl max-h-46"
-                id="search-dropdown"></div>
+              <div class="absolute top-full left-0 w-full bg-neutral-800 shadow-search hidden flex-col gap-1 mt-2.5 z-30 p-2 rounded-xl max-h-46" id="search-dropdown"></div>
               <!-- Search loading box -->
-              <div
-                class="absolute top-full left-0 w-full bg-neutral-800 shadow-search mt-3.5 z-30 hidden items-center gap-2.5 py-4.5 px-4 rounded-xl"
-                id="search-loading-box">
-                <img
-                  src="./assets/images/icon-loading.svg"
-                  alt="Loading icon"
-                  class="w-4 flex-shrink-0 animate-spin" />
-                <p class="font-medium text-base leading-tighter">
-                  Search in progress
-                </p>
+              <div class="absolute top-full left-0 w-full bg-neutral-800 shadow-search mt-3.5 z-30 hidden items-center gap-2.5 py-4.5 px-4 rounded-xl" id="search-loading-box">
+                <img src="./assets/images/icon-loading.svg" alt="Loading icon" class="w-4 flex-shrink-0 animate-spin" />
+                <p class="font-medium text-base leading-tighter">Search in progress</p>
               </div>
             </div>
             <!-- Search button -->
-            <button
-              class="font-medium text-xl leading-tighter bg-blue-500 py-4 px-6 rounded-xl outline outline-2 outline-transparent focus:outline-blue-500 focus:outline-offset-3 transition-all duration-150 capitalize"
-              id="search-btn">
-              search
-            </button>
+            <button class="font-medium text-xl leading-tighter bg-blue-500 py-4 px-6 rounded-xl outline outline-2 outline-transparent focus:outline-blue-500 focus:outline-offset-3 transition-all duration-150 capitalize" id="search-btn">search</button>
           </section>
         </div>
         <!-- API error -->
-        <div
-          class="container hidden flex-col items-center gap-6 pt-10"
-          id="api-err-container">
-          <img
-            src="./assets/images/icon-error.svg"
-            alt="Error icon"
-            class="h-12.5 w-10.5" />
-          <h2
-            class="font-bricolage-grotesque font-bold text-5.25xl leading-tighter text-center">
-            Something went wrong
-          </h2>
-          <p
-            class="font-medium text-xl leading-tighter text-neutral-200 text-center max-w-138.5">
-            <span id="api-err"></span>. Please try again in a few moments.
-          </p>
-          <button
-            class="font-medium text-base leading-tighter capitalize bg-neutral-800 rounded-lg flex items-center gap-2.5 py-3 px-4 outline outline-2 outline-transparent focus:outline-white focus:outline-offset-3 transition-all duration-150"
-            id="retry-btn">
-            <img
-              src="./assets/images/icon-retry.svg"
-              alt="Retry icon"
-              class="inline-block w-4" />
+        <div class="container hidden flex-col items-center gap-6 pt-10" id="api-err-container">
+          <img src="./assets/images/icon-error.svg" alt="Error icon" class="h-12.5 w-10.5" />
+          <h2 class="font-bricolage-grotesque font-bold text-5.25xl leading-tighter text-center">Something went wrong</h2>
+          <p class="font-medium text-xl leading-tighter text-neutral-200 text-center max-w-138.5"><span id="api-err"></span>. Please try again in a few moments.</p>
+          <button class="font-medium text-base leading-tighter capitalize bg-neutral-800 rounded-lg flex items-center gap-2.5 py-3 px-4 outline outline-2 outline-transparent focus:outline-white focus:outline-offset-3 transition-all duration-150" id="retry-btn">
+            <img src="./assets/images/icon-retry.svg" alt="Retry icon" class="inline-block w-4" />
             retry
           </button>
         </div>
       </header>
       <!-- Main content showcase -->
       <section class="hidden mt-8 lg:mt-12" id="main-content-showcase">
-        <p
-          class="hidden font-bold text-2.8xl leading-tighter text-center"
-          id="location-err"></p>
-        <div
-          class="container grid lg:grid-cols-[25fr_12fr] gap-8"
-          id="main-content-showcase-container">
+        <p class="hidden font-bold text-2.8xl leading-tighter text-center" id="location-err"></p>
+        <div class="container grid lg:grid-cols-[25fr_12fr] gap-8" id="main-content-showcase-container">
           <!-- Main content showcase left -->
           <div>
             <!-- Current weather -->
             <div>
               <!-- Temperature -->
-              <div
-                class="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4 md:gap-0 items-center px-6 py-10.25 md:py-20.75 rounded-2.5xl bg-no-repeat bg-center bg-cover bg-[url('../assets/images/bg-today-small.svg')] sm:bg-[url('../assets/images/bg-today-large.svg')] relative overflow-hidden">
+              <div class="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4 md:gap-0 items-center px-6 py-10.25 md:py-20.75 rounded-2.5xl bg-no-repeat bg-center bg-cover bg-[url('../assets/images/bg-today-small.svg')] sm:bg-[url('../assets/images/bg-today-large.svg')] relative overflow-hidden">
                 <!-- Temperature loading -->
-                <div
-                  class="bg-no-repeat bg-center bg-cover bg-neutral-800 absolute top-0 left-0 w-full h-full z-20 flex flex-col gap-3.5 items-center justify-center px-6 py-10.25 md:py-20.75"
-                  id="temp-loading-box">
+                <div class="bg-no-repeat bg-center bg-cover bg-neutral-800 absolute top-0 left-0 w-full h-full z-20 flex flex-col gap-3.5 items-center justify-center px-6 py-10.25 md:py-20.75" id="temp-loading-box">
                   <!-- Temperature loading dots -->
                   <div class="flex items-center gap-2.5">
-                    <div
-                      class="w-3 h-3 bg-white opacity-80 rounded-full loading-dot"></div>
-                    <div
-                      class="w-3 h-3 bg-white opacity-80 rounded-full loading-dot"></div>
-                    <div
-                      class="w-3 h-3 bg-white opacity-80 rounded-full loading-dot"></div>
+                    <div class="w-3 h-3 bg-white opacity-80 rounded-full loading-dot"></div>
+                    <div class="w-3 h-3 bg-white opacity-80 rounded-full loading-dot"></div>
+                    <div class="w-3 h-3 bg-white opacity-80 rounded-full loading-dot"></div>
                   </div>
-                  <span
-                    class="font-medium text-lg leading-tighter text-neutral-200"
-                    >Loading...</span
-                  >
+                  <span class="font-medium text-lg leading-tighter text-neutral-200">Loading...</span>
                 </div>
                 <div class="text-center md:text-left">
-                  <h2
-                    id="location"
-                    class="font-bold text-2.8xl leading-tighter capitalize"></h2>
-                  <h4
-                    id="date"
-                    class="font-medium text-lg leading-tighter capitalize opacity-80 mt-3"></h4>
+                  <h2 id="location" class="font-bold text-2.8xl leading-tighter capitalize"></h2>
+                  <h4 id="date" class="font-medium text-lg leading-tighter capitalize opacity-80 mt-3"></h4>
                 </div>
-                <div
-                  class="flex items-center justify-center md:justify-start gap-5">
+                <div class="flex items-center justify-center md:justify-start gap-5">
                   <img class="h-30" id="current-weather-icon" />
-                  <span
-                    id="current-temp"
-                    class="font-semibold italic text-8xl block"></span>
+                  <span id="current-temp" class="font-semibold italic text-8xl block"></span>
                 </div>
               </div>
               <!-- Stats -->
-              <ul
-                class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5 xl:gap-6 mt-5 xl:mt-8">
-                <li
-                  class="bg-neutral-800 p-5 shadow-ui rounded-xl flex flex-col gap-6">
-                  <h4
-                    class="font-medium text-lg leading-tighter text-neutral-200 capitalize">
-                    feels like
-                  </h4>
-                  <span
-                    id="apparent-temp"
-                    class="font-light text-3.24xl leading-none"
-                    >–</span
-                  >
+              <ul class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5 xl:gap-6 mt-5 xl:mt-8">
+                <li class="bg-neutral-800 p-5 shadow-ui rounded-xl flex flex-col gap-6">
+                  <h4 class="font-medium text-lg leading-tighter text-neutral-200 capitalize">feels like</h4>
+                  <span id="apparent-temp" class="font-light text-3.24xl leading-none">–</span>
                 </li>
-                <li
-                  class="bg-neutral-800 p-5 shadow-ui rounded-xl flex flex-col gap-6">
-                  <h4
-                    class="font-medium text-lg leading-tighter text-neutral-200 capitalize">
-                    humidity
-                  </h4>
-                  <span
-                    id="relative-humidity"
-                    class="font-light text-3.24xl leading-none"
-                    >–</span
-                  >
+                <li class="bg-neutral-800 p-5 shadow-ui rounded-xl flex flex-col gap-6">
+                  <h4 class="font-medium text-lg leading-tighter text-neutral-200 capitalize">humidity</h4>
+                  <span id="relative-humidity" class="font-light text-3.24xl leading-none">–</span>
                 </li>
-                <li
-                  class="bg-neutral-800 p-5 shadow-ui rounded-xl flex flex-col gap-6">
-                  <h4
-                    class="font-medium text-lg leading-tighter text-neutral-200 capitalize">
-                    wind
-                  </h4>
-                  <span
-                    id="wind-speed"
-                    class="font-light text-3.24xl leading-none"
-                    >–</span
-                  >
+                <li class="bg-neutral-800 p-5 shadow-ui rounded-xl flex flex-col gap-6">
+                  <h4 class="font-medium text-lg leading-tighter text-neutral-200 capitalize">wind</h4>
+                  <span id="wind-speed" class="font-light text-3.24xl leading-none">–</span>
                 </li>
-                <li
-                  class="bg-neutral-800 p-5 shadow-ui rounded-xl flex flex-col gap-6">
-                  <h4
-                    class="font-medium text-lg leading-tighter text-neutral-200 capitalize">
-                    precipitation
-                  </h4>
-                  <span
-                    id="precipitation"
-                    class="font-light text-3.24xl leading-none"
-                    >–</span
-                  >
+                <li class="bg-neutral-800 p-5 shadow-ui rounded-xl flex flex-col gap-6">
+                  <h4 class="font-medium text-lg leading-tighter text-neutral-200 capitalize">precipitation</h4>
+                  <span id="precipitation" class="font-light text-3.24xl leading-none">–</span>
                 </li>
               </ul>
             </div>
             <!-- Daily forecast -->
             <div class="mt-8 xl:mt-12">
-              <h3 class="font-semibold text-xl leading-tighter">
-                Daily forecast
-              </h3>
-              <ul
-                class="grid grid-cols-3 md:grid-cols-7 gap-4 mt-5"
-                id="daily-data"></ul>
+              <h3 class="font-semibold text-xl leading-tighter">Daily forecast</h3>
+              <ul class="grid grid-cols-3 md:grid-cols-7 gap-4 mt-5" id="daily-data"></ul>
             </div>
           </div>
           <!-- Main content showcase right (hourly forecast) -->
           <div class="bg-neutral-800 py-5 md:py-6 rounded-2.5xl">
-            <div
-              class="flex items-center gap-4 md:gap-6 justify-between relative px-4 md:px-6">
-              <h3 class="font-semibold text-xl leading-tighter">
-                Hourly forecast
-              </h3>
+            <div class="flex items-center gap-4 md:gap-6 justify-between relative px-4 md:px-6">
+              <h3 class="font-semibold text-xl leading-tighter">Hourly forecast</h3>
               <!-- Days navigation -->
               <div id="days-nav">
-                <button
-                  class="relative font-medium text-base leading-5.25 capitalize bg-neutral-600 py-2 pl-4 pr-10 rounded-lg after:content-[''] after:bg-[url('../assets/images/icon-dropdown.svg')] after:inline-block after:h-4.5 after:w-3 after:bg-no-repeat after:bg-center after:bg-contain after:absolute after:top-1/2 after:-translate-y-1/2 after:right-4 outline outline-1 outline-transparent focus:outline-white focus:outline-offset-1 transition-all duration-150 shadow-[0_0_0_0.0625rem_transparent] focus:shadow-neutral-900"
-                  id="days-btn">
-                  –
-                </button>
+                <button class="relative font-medium text-base leading-5.25 capitalize bg-neutral-600 py-2 pl-4 pr-10 rounded-lg after:content-[''] after:bg-[url('../assets/images/icon-dropdown.svg')] after:inline-block after:h-4.5 after:w-3 after:bg-no-repeat after:bg-center after:bg-contain after:absolute after:top-1/2 after:-translate-y-1/2 after:right-4 outline outline-1 outline-transparent focus:outline-white focus:outline-offset-1 transition-all duration-150 shadow-[0_0_0_0.0625rem_transparent] focus:shadow-neutral-900" id="days-btn">–</button>
                 <!-- Days dropdown -->
-                <div
-                  class="hidden flex-col gap-1 bg-neutral-800 shadow-[inset_0_0_0_0.0625rem_rgba(60,59,94,1),_0_0.5rem_1rem_0_rgba(2,1,44,0.32)] p-2 rounded-xl absolute top-full right-4 md:right-6 mt-2.5 z-50 w-[min(13.375rem,calc(100%-2rem))]"
-                  id="days-dropdown">
-                  <button
-                    class="font-medium text-base leading-tighter capitalize text-left rounded-lg bg-transparent hover:bg-neutral-700 py-2.5 px-2 outline outline-1 outline-transparent focus:outline-white focus:outline-offset-1 transition-all duration-150 shadow-[0_0_0_0.0625rem_transparent] focus:shadow-neutral-900">
-                    monday
-                  </button>
-                  <button
-                    class="font-medium text-base leading-tighter capitalize text-left rounded-lg bg-transparent hover:bg-neutral-700 py-2.5 px-2 outline outline-1 outline-transparent focus:outline-white focus:outline-offset-1 transition-all duration-150 shadow-[0_0_0_0.0625rem_transparent] focus:shadow-neutral-900">
-                    tuesday
-                  </button>
-                  <button
-                    class="font-medium text-base leading-tighter capitalize text-left rounded-lg bg-transparent hover:bg-neutral-700 py-2.5 px-2 outline outline-1 outline-transparent focus:outline-white focus:outline-offset-1 transition-all duration-150 shadow-[0_0_0_0.0625rem_transparent] focus:shadow-neutral-900">
-                    wednesday
-                  </button>
-                  <button
-                    class="font-medium text-base leading-tighter capitalize text-left rounded-lg bg-transparent hover:bg-neutral-700 py-2.5 px-2 outline outline-1 outline-transparent focus:outline-white focus:outline-offset-1 transition-all duration-150 shadow-[0_0_0_0.0625rem_transparent] focus:shadow-neutral-900">
-                    thursday
-                  </button>
-                  <button
-                    class="font-medium text-base leading-tighter capitalize text-left rounded-lg bg-transparent hover:bg-neutral-700 py-2.5 px-2 outline outline-1 outline-transparent focus:outline-white focus:outline-offset-1 transition-all duration-150 shadow-[0_0_0_0.0625rem_transparent] focus:shadow-neutral-900">
-                    friday
-                  </button>
-                  <button
-                    class="font-medium text-base leading-tighter capitalize text-left rounded-lg bg-transparent hover:bg-neutral-700 py-2.5 px-2 outline outline-1 outline-transparent focus:outline-white focus:outline-offset-1 transition-all duration-150 shadow-[0_0_0_0.0625rem_transparent] focus:shadow-neutral-900">
-                    saturday
-                  </button>
-                  <button
-                    class="font-medium text-base leading-tighter capitalize text-left rounded-lg bg-transparent hover:bg-neutral-700 py-2.5 px-2 outline outline-1 outline-transparent focus:outline-white focus:outline-offset-1 transition-all duration-150 shadow-[0_0_0_0.0625rem_transparent] focus:shadow-neutral-900">
-                    sunday
-                  </button>
+                <div class="hidden flex-col gap-1 bg-neutral-800 shadow-[inset_0_0_0_0.0625rem_rgba(60,59,94,1),_0_0.5rem_1rem_0_rgba(2,1,44,0.32)] p-2 rounded-xl absolute top-full right-4 md:right-6 mt-2.5 z-50 w-[min(13.375rem,calc(100%-2rem))]" id="days-dropdown">
+                  <button class="font-medium text-base leading-tighter capitalize text-left rounded-lg bg-transparent hover:bg-neutral-700 py-2.5 px-2 outline outline-1 outline-transparent focus:outline-white focus:outline-offset-1 transition-all duration-150 shadow-[0_0_0_0.0625rem_transparent] focus:shadow-neutral-900">monday</button>
+                  <button class="font-medium text-base leading-tighter capitalize text-left rounded-lg bg-transparent hover:bg-neutral-700 py-2.5 px-2 outline outline-1 outline-transparent focus:outline-white focus:outline-offset-1 transition-all duration-150 shadow-[0_0_0_0.0625rem_transparent] focus:shadow-neutral-900">tuesday</button>
+                  <button class="font-medium text-base leading-tighter capitalize text-left rounded-lg bg-transparent hover:bg-neutral-700 py-2.5 px-2 outline outline-1 outline-transparent focus:outline-white focus:outline-offset-1 transition-all duration-150 shadow-[0_0_0_0.0625rem_transparent] focus:shadow-neutral-900">wednesday</button>
+                  <button class="font-medium text-base leading-tighter capitalize text-left rounded-lg bg-transparent hover:bg-neutral-700 py-2.5 px-2 outline outline-1 outline-transparent focus:outline-white focus:outline-offset-1 transition-all duration-150 shadow-[0_0_0_0.0625rem_transparent] focus:shadow-neutral-900">thursday</button>
+                  <button class="font-medium text-base leading-tighter capitalize text-left rounded-lg bg-transparent hover:bg-neutral-700 py-2.5 px-2 outline outline-1 outline-transparent focus:outline-white focus:outline-offset-1 transition-all duration-150 shadow-[0_0_0_0.0625rem_transparent] focus:shadow-neutral-900">friday</button>
+                  <button class="font-medium text-base leading-tighter capitalize text-left rounded-lg bg-transparent hover:bg-neutral-700 py-2.5 px-2 outline outline-1 outline-transparent focus:outline-white focus:outline-offset-1 transition-all duration-150 shadow-[0_0_0_0.0625rem_transparent] focus:shadow-neutral-900">saturday</button>
+                  <button class="font-medium text-base leading-tighter capitalize text-left rounded-lg bg-transparent hover:bg-neutral-700 py-2.5 px-2 outline outline-1 outline-transparent focus:outline-white focus:outline-offset-1 transition-all duration-150 shadow-[0_0_0_0.0625rem_transparent] focus:shadow-neutral-900">sunday</button>
                 </div>
               </div>
             </div>
-            <ul
-              class="flex flex-col gap-4 mt-4 max-h-148 overflow-y-scroll pl-4 md:pl-6 pr-3 md:pr-5"
-              id="hourly-data"></ul>
+            <ul class="flex flex-col gap-4 mt-4 max-h-148 overflow-y-scroll pl-4 md:pl-6 pr-3 md:pr-5" id="hourly-data"></ul>
           </div>
         </div>
       </section>
